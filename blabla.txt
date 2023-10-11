@@ -1,0 +1,9 @@
+{
+  companyId: "65242a3c69e74cdf01e6ee77",
+  title: "Serviço teste",
+  price: 20,
+  commission: 10,
+  duration: 30,
+  recorrence: 30,
+  description: "Descricao teste"
+}
