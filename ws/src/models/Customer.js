@@ -1,20 +1,20 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const customer = new Schema({
   name: {
     type: String,
-    required: [true, 'Name is required'],
+    required: [true, "Name is required"],
   },
 
   avatar: {
     type: String,
-    default: null
+    default: null,
   },
 
   email: {
     type: String,
-    required: [true, 'E-mail is required'],
+    required: [true, "E-mail is required"],
   },
 
   password: {
@@ -24,7 +24,7 @@ const customer = new Schema({
 
   phone: {
     type: String,
-    required: [true, 'Phone is required'],
+    required: [true, "Phone is required"],
   },
 
   address: {
@@ -33,11 +33,12 @@ const customer = new Schema({
     cep: String,
     number: String,
     country: String,
+    street: String,
   },
 
   gender: {
     type: String,
-    enum: ['M', 'F'],
+    enum: ["M", "F"],
     required: true,
   },
 
@@ -49,14 +50,14 @@ const customer = new Schema({
   status: {
     type: String,
     required: true,
-    enum: ['A', 'I'],
-    default: 'A',
+    enum: ["A", "I"],
+    default: "A",
   },
 
   document: {
     type: {
       type: String,
-      enum: ['cpf', 'cnpj'],
+      enum: ["cpf", "cnpj"],
       required: true,
     },
     number: {
@@ -67,7 +68,7 @@ const customer = new Schema({
 
   customerId: {
     type: String,
-    required: true
+    required: true,
   },
 
   dateRegister: {
@@ -76,4 +77,4 @@ const customer = new Schema({
   },
 });
 
-module.exports = mongoose.model('customer', customer);
+module.exports = mongoose.model("customer", customer);

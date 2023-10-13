@@ -10,9 +10,10 @@ const busboyBodyParser = require("busboy-body-parser");
 // routers
 const companysRouter = require("./routes/companies.routes");
 const specialtiesRouter = require("../src/routes/specialties.routes");
-const schedulesRouter = require("../src/routes/schedule.routes");
+const timeTablesRouter = require("../src/routes/timeTables.routes");
 const colaboratorsRouter = require("../src/routes/colaborators.routes");
 const customersRouter = require("../src/routes/customers.routes");
+const schedulesRouterv= require('../src/routes/schedules.routes');
 
 require("../src/database");
 
@@ -30,9 +31,10 @@ app.set("port", 8000);
 
 app.use("/companies", companysRouter);
 app.use("/specialties", specialtiesRouter);
-app.use("/schedules", schedulesRouter);
+app.use("/timeTables", timeTablesRouter);
 app.use("/colaborators", colaboratorsRouter);
 app.use("/customers", customersRouter);
+app.use('/schedules', schedulesRouterv);
 
 app.listen(app.get("port"), () => {
   console.log(`WS listening on port ${app.get("port")}✅`);

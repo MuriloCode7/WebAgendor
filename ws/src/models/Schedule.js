@@ -1,42 +1,54 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const Schema =  mongoose.Schema;
 
 const schedule = new Schema({
   companyId: {
     type: mongoose.Types.ObjectId,
     ref: 'company',
-    required: true,
+    required: true
   },
 
-  specialties: [
-    {
-      type: mongoose.Types.ObjectId,
-      ref: 'service',
-      required: true,
-    },
-  ],
-
-  colaborators: [
-    {
-      type: mongoose.Types.ObjectId,
-      ref: 'colaborator',
-      required: true,
-    },
-  ],
-
-  days: {
-    type: [Number],
-    required: true,
+  customerId: {
+    type: mongoose.Types.ObjectId,
+    ref: 'customer',
+    required: true
   },
 
-  startTime: {
+  colaboratorId: {
+    type: mongoose.Types.ObjectId,
+    ref: 'colaborator',
+    required: true
+  },
+
+  specialtyId: {
+    type: mongoose.Types.ObjectId,
+    ref: 'service',
+    required: true
+  },
+
+  date: {
     type: Date,
-    required: true,
+    required: true
   },
 
-  endTime: {
+  commission: {
+    type: Number,
+  },
+
+  value: {
+    type: Number,
+    required: true
+  },
+
+  /**
+  transactionId: {
+    type: String,
+  },
+   */
+  
+  dateRegister: {
     type: Date,
-    required: true,
+    default: Date.now,
   },
 });
 

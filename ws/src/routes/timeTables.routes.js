@@ -1,14 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const _ = require("lodash");
-const Schedule = require("../models/Schedule");
+const TimeTable = require("../models/TimeTable");
 const ColaboratorSpecialty = require("../models/relationship/ColaboratorSpecialty");
 
 router.post("/", async (req, res) => {
   try {
-    const schedule = await new Schedule(req.body).save();
+    const timeTable = await new TimeTable(req.body).save();
     res.json({
-      schedule,
+      timeTable,
     });
   } catch {
     res.json({ error: true, message: err.message });
@@ -20,34 +20,34 @@ router.get("/company/:companyId", async (req, res) => {
   try {
     const { companyId } = req.params;
 
-    const schedules = await Schedule.find({
+    const timeTables = await TimeTable.find({
       companyId,
     });
-    res.json({ error: false, schedules });
+    res.json({ error: false, timeTables });
   } catch (err) {
     res.json({ error: true, message: err.message });
   }
 });
 
 // Rota para atualizar um horario
-router.put("/:scheduleId", async (req, res) => {
+router.put("/:timeTableId", async (req, res) => {
   try {
-    const { scheduleId } = req.params;
-    const schedule = req.body;
+    const { timeTableId } = req.params;
+    const timeTable = req.body;
 
-    await Schedule.findByIdAndUpdate(scheduleId, schedule);
-    res.json({ error: false, schedule });
+    await TimeTable.findByIdAndUpdate(timeTableId, timeTable);
+    res.json({ error: false, timeTable });
   } catch (err) {
     res.json({ error: true, message: err.message });
   }
 });
 
 // Rota para excluir um horário
-router.delete("/:scheduleId", async (req, res) => {
+router.delete("/:timeTableId", async (req, res) => {
   try {
-    const { scheduleId } = req.params;
+    const { timeTableId } = req.params;
 
-    await Schedule.findByIdAndDelete(scheduleId);
+    await TimeTable.findByIdAndDelete(timeTableId);
     res.json({ error: false });
   } catch (err) {
     res.json({ error: true, message: err.message });

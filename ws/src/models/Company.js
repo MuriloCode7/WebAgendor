@@ -37,6 +37,13 @@ const company = new Schema({
     type_geo: String,
     coordinates: [Number]
   },
+
+  /*
+  recipientId: {
+    type: String,
+    required: true
+  }
+  */
   
   dateRegister: {
     type: Date,
