@@ -7,7 +7,10 @@ const customer = new Schema({
     required: [true, 'Name is required'],
   },
 
-  avatar: String,
+  avatar: {
+    type: String,
+    default: null
+  },
 
   email: {
     type: String,
@@ -60,6 +63,11 @@ const customer = new Schema({
       type: String,
       required: true,
     },
+  },
+
+  customerId: {
+    type: String,
+    required: true
   },
 
   dateRegister: {
