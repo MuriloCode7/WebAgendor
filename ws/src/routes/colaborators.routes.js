@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-const pagarme = require("../services/pagarme");
+//const pagarme = require("../services/pagarme");
 const Colaborator = require("../models/Colaborator");
 const CompanyColaborator = require("../models/relationship/CompanyColaborator");
 const ColaboratorSpecialty = require("../models/relationship/ColaboratorSpecialty");
 
+// Rota de criacao de colaborador
 router.post("/", async (req, res) => {
   /**Para a criacao do colaborador é necessario criar uma sessao para
    * validar se todas as partes do cadastro foram bem sucedidas,
@@ -81,14 +82,14 @@ router.post("/", async (req, res) => {
           companyId,
           colaboratorId,
         },
-        { status: colaborator.bond },
+        { status: colaborator.statusBond },
         { session }
       );
     } else {
       await new CompanyColaborator({
         companyId,
         colaboratorId,
-        status: colaborator.bond,
+        status: colaborator.statusBond,
       }).save({ session });
     }
 
@@ -107,14 +108,55 @@ router.post("/", async (req, res) => {
     session.endSession();
 
     if (existsColaborator && existsRelationship) {
-      res.json({error: true, message: 'Colaborator já cadastrado nessa empresa.'})
+      res.json({
+        error: true,
+        message: "Colaborator já cadastrado nessa empresa.",
+      });
     } else {
-      res.json({error: false});
+      res.json({ error: false });
     }
-
   } catch (err) {
     await session.abortTransaction();
     session.endSession();
+    res.json({ error: true, message: err.message });
+  }
+});
+
+// Rota de update das infos do colaborador
+router.put("/:colaboratorId", async (req, res) => {
+  try {
+    const { statusBond, bondId, specialties } = req.body;
+
+    const { colaboratorId } = req.params;
+
+    //Atualizando status do vinculo
+    await CompanyColaborator.findByIdAndUpdate(bondId, { status: statusBond });
+
+    //Atualizando especialidades do colaborador
+    await ColaboratorSpecialty.deleteMany({ colaboratorId });
+
+    await ColaboratorSpecialty.insertMany(
+      specialties.map((specialtyId) => ({
+        specialtyId,
+        colaboratorId,
+      }))
+    );
+
+    res.json({ error: false });
+  } catch (err) {
+    res.json({ error: true, message: err.message });
+  }
+});
+
+//Rota para desvinculacao de colaborador com empresa
+router.delete("/bond/:bondId", async (req, res) => {
+  try {
+    const { bondId } = req.params;
+
+    await CompanyColaborator.findByIdAndUpdate(bondId, { status: "E" });
+
+    res.json({ error: false, message: "Desvinculado com sucesso." });
+  } catch (err) {
     res.json({ error: true, message: err.message });
   }
 });
