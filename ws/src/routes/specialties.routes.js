@@ -134,7 +134,7 @@ router.put('/:id', async (req, res) => {
       // Criar arquivo
       files = files.map(file => ({
         referenceId: req.params.id,
-        model: 'Specialty',
+        model: 'specialty',
         path: file,
       }));
 
