@@ -3,7 +3,7 @@ const router = express.Router();
 const mongoose = require("mongoose");
 //const pagarme = require("../services/pagarme");
 const Customer = require("../models/Customer");
-const CompanyCustomer = require('../models/relationship/CompanyCustomer')
+const CompanyCustomer = require("../models/relationship/CompanyCustomer");
 
 // Rota para criacao de um cliente
 router.post("/", async (req, res) => {
@@ -81,7 +81,7 @@ router.post("/", async (req, res) => {
           companyId,
           customerId,
         },
-        { status: 'A' },
+        { status: "A" },
         { session }
       );
     } else {
@@ -106,6 +106,57 @@ router.post("/", async (req, res) => {
   } catch (err) {
     await session.abortTransaction();
     session.endSession();
+    res.json({ error: true, message: err.message });
+  }
+});
+
+//Rota para buscar clientes a partir de qualquer filtro.
+router.post("/filter", async (req, res) => {
+  try {
+    const customers = await Customer.find(req.body.filters);
+
+    res.json({ error: false, customers });
+  } catch (err) {
+    res.json({ error: true, message: err.message });
+  }
+});
+
+//Rota para listar todos os clientes de uma empresa
+router.get("/company/:companyId", async (req, res) => {
+  try {
+    const { companyId } = req.params;
+
+    const customers = await CompanyCustomer.find({
+      companyId,
+      status: { $ne: "E" },
+      /* Para que seja mostrado os dados do colaborador na busca, 
+      damos um populate no id dele, que é uma chave estrangeira */
+    })
+      .populate("customerId")
+      .select("customerId dateRegister");
+
+    res.json({
+      error: false,
+      customers: customers.map((bond) => ({
+        ...bond.customerId._doc,
+        bondId: bond._id,
+        dateRegister: bond.dateRegister,
+      })),
+    });
+  } catch (err) {
+    res.json({ error: true, message: err.message });
+  }
+});
+
+//Rota para desvinculacao de cliente com empresa
+router.delete("/bond/:bondId", async (req, res) => {
+  try {
+    const { bondId } = req.params;
+
+    await CompanyCustomer.findByIdAndUpdate(bondId, { status: "E" });
+
+    res.json({ error: false, message: "Desvinculado com sucesso." });
+  } catch (err) {
     res.json({ error: true, message: err.message });
   }
 });
