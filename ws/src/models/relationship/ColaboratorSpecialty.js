@@ -11,7 +11,7 @@ const colaboratorSpecialty = new Schema({
 
   specialtyId: {
     type: mongoose.Types.ObjectId,
-    ref: 'service',
+    ref: 'specialty',
     required: true
   },
 

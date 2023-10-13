@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
+const moment = require("moment");
 //const pagarme = require("../services/pagarme");
 
 const Customer = require("../models/Customer");
@@ -11,6 +12,7 @@ const Schedule = require("../models/Schedule");
 //const utils = require("../services/utils");
 //const keys = require("../data/keys.json");
 
+// Rota para criar um agendamento
 router.post("/", async (req, res) => {
   const db = mongoose.connection;
   const session = await db.startSession();
@@ -116,16 +118,36 @@ router.post("/", async (req, res) => {
       ...req.body,
       //transactionId: createPayment.data.id,
       commission: specialty.commission,
-      value: specialty.price
+      value: specialty.price,
     }).save({ session });
 
     await session.commitTransaction();
     session.endSession();
 
-    res.json({error: false, schedule});
+    res.json({ error: false, schedule });
   } catch (err) {
     await session.commitTransaction();
     session.endSession();
+    res.json({ error: true, message: err.message });
+  }
+});
+
+// Rota para listar todos os agendamentos de uma empresa dentro de um periodo
+router.post("/filter", async (req, res) => {
+  try {
+    const { period, companyId } = req.body;
+
+    const schedules = await Schedule.find({
+      companyId,
+      date: {
+        $gte: moment(period.start).startOf("day"),
+        $lte: moment(period.end).endOf("day"),
+      },
+    }).populate({path: 'specialtyId', select: 'title duration'})
+      .populate({path: 'colaboratorId', select: 'name'})
+      .populate({path: 'customerId', select: 'name'});
+    res.json({ error: false, schedules });
+  } catch (err) {
     res.json({ error: true, message: err.message });
   }
 });
