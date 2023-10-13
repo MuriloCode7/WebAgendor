@@ -162,13 +162,33 @@ router.delete("/bond/:bondId", async (req, res) => {
 });
 
 //Rota para buscar colaboraders a partir de qualquer filtro.
-router.get('/filter', async (req, res) => {
+router.post("/filter", async (req, res) => {
   try {
     const colaborators = await Colaborator.find(req.body.filters);
 
-    res.json({error: false, colaborators});
+    res.json({ error: false, colaborators });
   } catch (err) {
-    res.json({error: true, message: err.message});
+    res.json({ error: true, message: err.message });
+  }
+});
+
+//Rota para listar todos os colaboradores de uma empresa
+router.get("/company/:companyId", async (req, res) => {
+  try {
+    const { companyId } = req.params;
+
+    const companyColaborators = await CompanyColaborator.find({
+      companyId,
+      status: { $ne: "E" },
+      /* Para que seja mostrado os dados do colaborador na busca, 
+      damos um populate no id dele, que é uma chave estrangeira */
+    })
+      .populate("colaboratorId")
+      .select("colaboratorId dateRegister status");
+
+    res.json({ error: false, companyColaborators });
+  } catch (err) {
+    res.json({ error: true, message: err.message });
   }
 });
 

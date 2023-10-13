@@ -40,7 +40,7 @@ const company = new Schema({
   
   dateRegister: {
     type: Date,
-    defaul: Date.now
+    default: Date.now
   },
 });
 
