@@ -161,4 +161,15 @@ router.delete("/bond/:bondId", async (req, res) => {
   }
 });
 
+//Rota para buscar colaboraders a partir de qualquer filtro.
+router.get('/filter', async (req, res) => {
+  try {
+    const colaborators = await Colaborator.find(req.body.filters);
+
+    res.json({error: false, colaborators});
+  } catch (err) {
+    res.json({error: true, message: err.message});
+  }
+});
+
 module.exports = router;
