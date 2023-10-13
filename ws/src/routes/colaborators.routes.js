@@ -176,6 +176,7 @@ router.post("/filter", async (req, res) => {
 router.get("/company/:companyId", async (req, res) => {
   try {
     const { companyId } = req.params;
+    const listColaborators = [];
 
     const companyColaborators = await CompanyColaborator.find({
       companyId,
@@ -183,10 +184,30 @@ router.get("/company/:companyId", async (req, res) => {
       /* Para que seja mostrado os dados do colaborador na busca, 
       damos um populate no id dele, que é uma chave estrangeira */
     })
-      .populate("colaboratorId")
+      .populate({path: "colaboratorId", select: "-password"})
       .select("colaboratorId dateRegister status");
 
-    res.json({ error: false, companyColaborators });
+    for (let bond of companyColaborators) {
+      const specialties = await ColaboratorSpecialty.find({
+        colaboratorId: bond.colaboratorId._id,
+      });
+
+      listColaborators.push({
+        ...bond._doc,
+        specialties,
+      });
+    }
+
+    res.json({
+      error: false,
+      colaborators: listColaborators.map((bond) => ({
+        ...bond.colaboratorId._doc,
+        bondId: bond._id,
+        bond: bond.status,
+        specialties: bond.specialties,
+        dateRegister: bond.dateRegister,
+      })),
+    });
   } catch (err) {
     res.json({ error: true, message: err.message });
   }
