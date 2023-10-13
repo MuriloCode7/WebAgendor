@@ -50,7 +50,8 @@ const colaborator = new Schema({
     default: "A",
   },
 
-  bankAccount: {
+  /*
+    bankAccount: {
     holder: {
       type: String,
       required: true,
@@ -85,6 +86,8 @@ const colaborator = new Schema({
     type: String,
     required: true,
   },
+
+  */
 
   dateRegister: {
     type: Date,

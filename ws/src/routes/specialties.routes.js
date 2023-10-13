@@ -12,7 +12,7 @@ router.post('/', async (req, res) => {
   /** Aqui passamos toda a informação da requisição para o busboy lidar quando um
    * upload é iniciado e quando termina
    */
-  let busboy = new Busboy({ headers: req.headers });
+  let busboy = Busboy({ headers: req.headers });
   /**Quando o busboy tiver finalizado o processamento, será executado o upload de fato,
    * aqui ele vai garantir que os arquivos já estejam disponiveis
    */

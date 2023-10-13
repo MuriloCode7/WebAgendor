@@ -35,7 +35,7 @@ app.use("/colaborators", colaboratorsRouter);
 
 
 app.listen(app.get('port'), () => {
-    console.log(`WS listening on port ${app.get('port')}`);
+    console.log(`WS listening on port ${app.get('port')}✅`);
 });
 
 

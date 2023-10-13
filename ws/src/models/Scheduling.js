@@ -20,7 +20,7 @@ const scheduling = new Schema({
     required: true
   },
 
-  serviceId: {
+  specialtyId: {
     type: mongoose.Types.ObjectId,
     ref: 'service',
     required: true
