@@ -24,7 +24,7 @@ const specialty = new Schema({
   },
 
   duration: {
-    type: Number, // Duração em minutos
+    type: Date, // Duração em minutos
     required: true,
   },
 

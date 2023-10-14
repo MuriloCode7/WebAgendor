@@ -9,7 +9,9 @@ const Company = require("../models/Company");
 const Specialty = require("../models/Specialty");
 const Colaborator = require("../models/Colaborator");
 const Schedule = require("../models/Schedule");
-//const utils = require("../services/utils");
+const timeTable = require("../models/TimeTable");
+const TimeTable = require("../models/TimeTable");
+const utils = require("../services/utils");
 //const keys = require("../data/keys.json");
 
 // Rota para criar um agendamento
@@ -143,10 +145,147 @@ router.post("/filter", async (req, res) => {
         $gte: moment(period.start).startOf("day"),
         $lte: moment(period.end).endOf("day"),
       },
-    }).populate({path: 'specialtyId', select: 'title duration'})
-      .populate({path: 'colaboratorId', select: 'name'})
-      .populate({path: 'customerId', select: 'name'});
+    })
+      .populate({ path: "specialtyId", select: "title duration" })
+      .populate({ path: "colaboratorId", select: "name" })
+      .populate({ path: "customerId", select: "name" });
     res.json({ error: false, schedules });
+  } catch (err) {
+    res.json({ error: true, message: err.message });
+  }
+});
+
+/* IMPORTANTE: Rota responsavel por atraves de um servico ver na agenda quais são os
+dias disponiveis, os horarios disponiveis para esses dias e os colaboradores
+*/
+router.post("/availableDays", async (req, res) => {
+  try {
+    const { date, companyId, specialtyId } = req.body;
+    const timeTables = await TimeTable.find({ companyId });
+    const specialty = await Specialty.findById(specialtyId).select("duration");
+
+    let calendar = [];
+    let lastDay = moment(date);
+
+    // Duracao do servico sendo convertida para minutos
+    const specialtyMinutes = utils.hourToMinutes(
+      moment(specialty.duration).format("HH:mm")
+    );
+
+    /* Chama a funcao que calcula quantos slots da agenda serão necessarios
+    para colocar o servico 
+    1 - Essa funcao recebe a duracao do servico como um DateTime e define como horario inicial
+    2 - Passa o horario final sendo a duracao + ele mesmo ex.: 01:30 + 01:30 = 03:00
+    3 - Passa o intervalo que a agenda é formada, ex: de 30min em 30 min
+    4 - Calcula quantos espacos de 30 minutos cabem desse intervalo de horarios
+    5 - Por fim, retorna a quantidade de espacos
+    */
+    const specialtySlots = utils.sliceMinutes(
+      specialty.duration, // inicio
+      moment(specialty.duration).add(specialtyMinutes, "minutes"),
+      utils.SLOT_DURATION
+    ).length;
+
+    /* Procurar dias disponiveis no intervalo de um ano até a o numero de dias disponiveis ser
+    igual a 7 */
+    for (let i = 0; i <= 365 && calendar.length <= 7; i++) {
+      const validTimeTables = timeTables.filter((timeTable) => {
+        // Recebe true se o dia da semana escolhido está disponivel no horario
+        const availableDaysWeek = timeTable.days.includes(
+          moment(lastDay).day()
+        );
+
+        // Recebe true se o servico stá disponivel no horario
+        const availableSpecialty = timeTable.specialties.includes(specialtyId);
+
+        return availableDaysWeek && availableSpecialty;
+      });
+
+      /*
+        Todos os colaboradores disponiveis no dia e seus horarios
+        */
+      if (validTimeTables.length > 0) {
+        let allTimeTablesDay = {};
+
+        for (let timeTable of validTimeTables) {
+          for (let colaboratorId of timeTable.colaborators) {
+            /* Se nao existir horarios definidos para o colaborador que esta sendo verifica, 
+            estes serao definidos */
+            if (!allTimeTablesDay[colaboratorId]) {
+              allTimeTablesDay[colaboratorId] = [];
+            }
+
+            // Pega todos os horarios validos e joga para dentro do colaborador
+            allTimeTablesDay[colaboratorId] = [
+              ...allTimeTablesDay[colaboratorId],
+              ...utils.sliceMinutes(
+                utils.mergeDateTime(lastDay, timeTable.startTime),
+                utils.mergeDateTime(lastDay, timeTable.endTime),
+                utils.SLOT_DURATION
+              ),
+            ];
+          }
+        }
+
+        /* Ocupacao de cada colaborador no dia  */
+        for (let colaboratorId of Object.keys(allTimeTablesDay)) {
+          // Recuperar agendamentos
+          const schedules = await Schedule.find({
+            colaboratorId,
+            date: {
+              $gte: moment(lastDay).startOf("day"),
+              $lte: moment(lastDay).endOf("day"),
+            },
+          })
+            .select("date specialtyId -_id")
+            .populate("specialtyId", "duration");
+
+          // Recuperar horarios agendados/indisponiveis
+          let unavailableTimeTables = schedules.map((schedule) => ({
+            startTime: moment(schedule.date),
+            endTime: moment(schedule.date).add(
+              utils.hourToMinutes(
+                moment(schedule.specialtyId.duration).format("HH:mm")
+              ),
+              "minutes"
+            ),
+          }));
+
+          // Conversao dos horarios ocupados para a hora de cada slot da agenda, ex: ['07:30', '08:00', '08:30']
+          unavailableTimeTables = unavailableTimeTables
+            .map(
+              (timeTable) =>
+                utils.sliceMinutes(
+                  timeTable.startTime,
+                  timeTable.endTime,
+                  utils.SLOT_DURATION
+                )
+              /* O flat() une arrays */
+            )
+            .flat();
+
+          // Removendo todos os horarios cupados
+          allTimeTablesDay = allTimeTablesDay[colaboratorId].map(
+            (freeTimeTable) => {
+              return unavailableTimeTables.includes(freeTimeTable)
+                ? "-"
+                : freeTimeTable;
+            }
+          );
+        }
+
+        calendar.push({
+          [lastDay.format("YYYY-MM-DD")]: allTimeTablesDay,
+        });
+      }
+
+      lastDay = lastDay.add(1, "day");
+    }
+
+    res.json({
+      error: false,
+      calendar,
+    });
   } catch (err) {
     res.json({ error: true, message: err.message });
   }
