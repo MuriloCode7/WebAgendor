@@ -1,0 +1,50 @@
+Anotações para Web Agendor 
+
+📝 TAREFAS
+
+-  Após término do curso, pedir para o Ttales passar curso do Marquin sobre tdd.
+- Aplicar as verificações de dados na criação de uma company
+- Corrigir aplicação da aws-sdk para a versão 3 no upload das imagens no specialty
+
+1:37
+
+*********************************
+
+* DICAS TTALES:
+- Criar um repositório para o front e outro para o back
+
+- Painel: Permitir o usuário escolher o serviço que ele está agendando para seu cliente
+
+* A modelagem das interfaces não serve apenas para criar telas bonitas, elas ajudam a entender a usabilidade do sistema e construir as tabelas do bd com base nos dados que estão sendo pedidos e exibidos ao usuário.
+
+* Construir o modelo relacional das tabelas que compoem o sistema ajuda na programação uma vez que dá um norte do fluxo das informações e registram a maior parte dos dados necessários para o sistema
+
+* CLUSTER: É um agrupamento de bancos de dados.
+Geralmente usado em aplicações de larga escala, onde é necessário ter várias réplicas do banco de dados.
+
+* Conexão com o BD:
+- user: web-agendor
+- password: webagendor123
+
+* Sessions: As sessions no mongodb permite a ação de rollback no try catch para desfazer as alterações do bd feitas no try catch
+
+*********************************
+
+Middlewares e bibliotecas usadas:
+-> Express Morgan: Biblioteca instalada para facilitar a visualização das requisições nas rotas
+-> Nodemon: Permite que as alterações feitas no app sejam executadas automaticamente, sem a necessidade de parar o servidor
+-> Mongoose: Camada acima do mongoDB que trabalha com mais agilidade do que o mongoDB convencional com o JS 
+-> Connect-busboy: Connect-busboy é um middleware que lida com o processamento de formulários de envio de arquivos (por exemplo, formulários de upload de arquivos) em aplicativos web Node.js.
+-> Turf: Biblioteca usada para calculos geoespaciais, com latitude, longitude, geolocalização...
+-> Lodash: O lodash é uma lib que tem diversas funcionalidades para lidar com dados
+-> React-router-dom
+
+>>>>
+yarn add morgan
+yarn add nodemon
+yarn add mongoose
+yarn add busboy
+yarn add @turf/turf
+yarn add axios
+yarn add lodash
+>>>>
