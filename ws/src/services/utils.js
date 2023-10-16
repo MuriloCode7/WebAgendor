@@ -31,4 +31,18 @@ module.exports = {
     )}`;
     return merged;
   },
+
+  /* Essa funcao pega um array e divide ele em arrays menores quando
+  encontra determinado elemento no array inicial */
+  splitByValue: (array, value) => {
+    let newArray = [[]];
+    array.forEach(item => {
+      if (item !== value) {
+        newArray[newArray.length - 1].push(item);
+      } else {
+        newArray.push([]);
+      }
+    });
+    return newArray;  
+  }
 };
