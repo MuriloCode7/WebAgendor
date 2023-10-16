@@ -12,6 +12,7 @@ const Schedule = require("../models/Schedule");
 const timeTable = require("../models/TimeTable");
 const TimeTable = require("../models/TimeTable");
 const utils = require("../services/utils");
+const _ = require("lodash");
 //const keys = require("../data/keys.json");
 
 // Rota para criar um agendamento
@@ -166,6 +167,7 @@ router.post("/availableDays", async (req, res) => {
 
     let calendar = [];
     let lastDay = moment(date);
+    let colaborators = [];
 
     // Duracao do servico sendo convertida para minutos
     const specialtyMinutes = utils.hourToMinutes(
@@ -264,26 +266,78 @@ router.post("/availableDays", async (req, res) => {
             )
             .flat();
 
-          // Removendo todos os horarios ocupados
-          allTimeTablesDay = allTimeTablesDay[colaboratorId].map(
-            (freeTimeTable) => {
-              return unavailableTimeTables.includes(freeTimeTable)
-                ? "-"
-                : freeTimeTable;
-            }
+          // Removendo todos os horarios cupados
+          let freeTimeTables = utils
+            .splitByValue(
+              allTimeTablesDay[colaboratorId].map((freeTimeTable) => {
+                return unavailableTimeTables.includes(freeTimeTable)
+                  ? "-"
+                  : freeTimeTable;
+              }),
+              "-"
+            )
+            .filter((freeTimeTable) => freeTimeTable.length > 0);
+
+          // Verificando se existe espaço suficiente nos horarios disponiveis
+          freeTimeTables = freeTimeTables.filter(
+            (timeTable) => timeTable.length >= specialtySlots
           );
+
+          /* Verificando se os horarios dentro do slot tem a continuidade necessaria */
+          freeTimeTables = freeTimeTables
+            .map((slot) =>
+              slot.filter(
+                (timeTable, index) => slot.length - index >= specialtySlots
+              )
+            )
+            .flat();
+
+          /* formatando os horarios de 2 em 2 para exibicao no app */
+          freeTimeTables = _.chunk(freeTimeTables, 2);
+
+          /* Remover colaborador caso não tenha disponibilidade */
+          if (freeTimeTables.length === 0) {
+            allTimeTablesDay = _.omit(allTimeTablesDay, colaboratorId);
+          } else {
+            allTimeTablesDay[colaboratorId] = freeTimeTables;
+          }
+
+          /*
+          Atribui para o colaborador somente os horários que foram calculados como
+          disponiveis tendo como base a duracao do servico
+          */
+          allTimeTablesDay[colaboratorId] = freeTimeTables;
         }
 
-        calendar.push({
-          [lastDay.format("YYYY-MM-DD")]: allTimeTablesDay,
-        });
+        /* Verificar se tem colaboradores disponiveis naquele dia */
+        const totalColaborators = Object.keys(allTimeTablesDay).length;
+
+        if (totalColaborators > 0) {
+          colaborators.push(Object.keys(allTimeTablesDay));
+          calendar.push({
+            [lastDay.format("YYYY-MM-DD")]: allTimeTablesDay,
+          });
+        }
       }
 
       lastDay = lastDay.add(1, "day");
     }
 
+    /* Recuperando dados dos colaboradores */
+    colaborators = _.uniq(colaborators.flat());
+
+    colaborators = await Colaborator.find({
+      _id: {$in: colaborators},
+    }).select('name avatar');
+
+    colaborators = colaborators.map((c) => ({
+      ...c._doc,
+      name: c.name.split(' ')[0]
+    }))
+
     res.json({
       error: false,
+      colaborators,
       calendar,
     });
   } catch (err) {
