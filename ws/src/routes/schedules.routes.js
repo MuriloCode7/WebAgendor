@@ -264,26 +264,14 @@ router.post("/availableDays", async (req, res) => {
             )
             .flat();
 
-          // Removendo todos os horarios cupados
-          let availableTimeTables = utils
-            .splitByValue(
-              allTimeTablesDay[colaboratorId].map((freeTimeTable) => {
-                return unavailableTimeTables.includes(freeTimeTable)
-                  ? "-"
-                  : freeTimeTable;
-              }),
-              "-"
-            )
-            .filter((freeTimeTable) => freeTimeTable.length > 0);
-
-          // Verificando se existe espaço suficiente nos horarios disponiveis
-          availableTimeTables = availableTimeTables.filter((timeTable) => timeTable.length >= specialtySlots);  
-          
-          /*
-          Atribui para o colaborador somente os horários que foram calculados como
-          disponiveis tendo como base a duracao do servico
-          */
-          allTimeTablesDay[colaboratorId] = availableTimeTables;
+          // Removendo todos os horarios ocupados
+          allTimeTablesDay = allTimeTablesDay[colaboratorId].map(
+            (freeTimeTable) => {
+              return unavailableTimeTables.includes(freeTimeTable)
+                ? "-"
+                : freeTimeTable;
+            }
+          );
         }
 
         calendar.push({
