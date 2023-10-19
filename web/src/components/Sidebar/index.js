@@ -4,7 +4,7 @@ import logo from "../../assets/logo.png";
 import { useLocation } from "react-router-dom";
 
 const Sidebar = () => {
-  let location = useLocation();
+  const location = useLocation();
   return (
     <sidebar className="col-2 h-100">
       <img src={logo} className="img-fluid px-3 py-4" alt="logo" />
@@ -20,7 +20,7 @@ const Sidebar = () => {
             <span className="mdi mdi-account-multiple"></span>
             <text>Clientes</text>
           </Link>
-        </li>
+        </li> 
       </ul>
     </sidebar>
   );
