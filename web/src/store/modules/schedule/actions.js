@@ -1,9 +1,13 @@
-import types from './types';
+import types from "./types";
 
 export function schedulesFilter(start, end) {
   return {
     type: types.SCHEDULES_FILTER,
     start,
-    end
-  }
+    end,
+  };
+}
+
+export function scheduleUpdate(schedules) {
+  return { type: types.SCHEDULE_UPDATE, schedules };
 }

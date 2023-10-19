@@ -1,23 +1,39 @@
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import moment from "moment";
-import { useDispatch  } from "react-redux";
-import { useEffect } from "react"; 
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import utils from "../../utils";
 
-import {schedulesFilter } from '../../store/modules/schedule/actions';
+import { schedulesFilter } from "../../store/modules/schedule/actions";
 
 const localizer = momentLocalizer(moment);
 
 const Schedules = () => {
   const dispatch = useDispatch();
+  const { schedules } = useSelector((state) => state.schedule);
+
+  const formatEvents = schedules.map((schedule) => ({
+    title: `${schedule.specialtyId.title} - ${schedule.customerId.name} - ${schedule.colaboratorId.name}`,
+    start: moment(schedule.date).toDate(),
+    end: moment(schedule.date)
+      .add(
+        utils.hourToMinutes(
+          moment(schedule.specialtyId.duration).format("HH:mm")
+        ),
+        "minutes"
+      )
+      .toDate(),
+  }));
 
   useEffect(() => {
-    dispatch(schedulesFilter(
-      moment().weekday(0).format("YYYY-MM-DD"), 
-      moment().weekday(6).format("YYYY-MM-DD")
+    dispatch(
+      schedulesFilter(
+        moment().weekday(0).format("YYYY-MM-DD"),
+        moment().weekday(6).format("YYYY-MM-DD")
       )
     );
-  });
+  }, []);
 
   return (
     <div className="col p-5 overflow-auto h-100">
@@ -26,13 +42,7 @@ const Schedules = () => {
           <h2 className="mb-4 mt-0">Agendamentos</h2>
           <Calendar
             localizer={localizer}
-            events={[
-              {
-                title: "Evento teste",
-                start: moment().toDate(),
-                end: moment().add(30, "minutes").toDate(),
-              },
-            ]}
+            events={formatEvents}
             defaultView="week"
             selectable
             popup
