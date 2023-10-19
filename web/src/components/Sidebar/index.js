@@ -6,23 +6,23 @@ import { useLocation } from "react-router-dom";
 const Sidebar = () => {
   const location = useLocation();
   return (
-    <sidebar className="col-2 h-100">
+    <aside className="col-2 h-100">
       <img src={logo} className="img-fluid px-3 py-4" alt="logo" />
       <ul>
         <li> 
           <Link to="/schedules" className={location.pathname === '/schedules' ? 'active' : ''}>
             <span className="mdi mdi-calendar-check"></span>
-            <text>Agendamentos</text>
+            Agendamentos
           </Link>
         </li>
         <li>
           <Link to="/customers" className={location.pathname === '/customers' ? 'active' : ''}>
             <span className="mdi mdi-account-multiple"></span>
-            <text>Clientes</text>
+            Clientes
           </Link>
         </li> 
       </ul>
-    </sidebar>
+    </aside>
   );
 };
 

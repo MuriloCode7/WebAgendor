@@ -36,6 +36,7 @@ header img {
 
 header span:not(.mdi) {
   margin-bottom: -10px;
+  color: #fff;
 }
 
 header span.mdi {
@@ -48,16 +49,16 @@ header small {
   margin-top: -20px;
 }
 
-sidebar {
+aside {
   background-color: var(--dark);
 }
 
-sidebar ul li {
+aside ul li {
   list-style: none;
   width: 100%;
 }
 
-sidebar ul li a {
+aside ul li a {
   width: 100%;
   color: #fff;
   opacity: 0.6;
@@ -70,16 +71,16 @@ sidebar ul li a {
   text-decoration: none;
 }
 
-sidebar ul li a.active {
+aside ul li a.active {
   opacity: 1;
   background-color: rgba(0, 0, 0, 0.6);
 }
 
-sidebar ul li a.active .mdi {
+aside ul li a.active .mdi {
   color: var(--primary);
 }
 
-sidebar ul li a.active,
-sidebar ul li a:focus {
+aside ul li a.active,
+aside ul li a:focus {
   color: #fff;
 }

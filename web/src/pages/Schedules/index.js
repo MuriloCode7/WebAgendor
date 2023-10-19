@@ -26,6 +26,22 @@ const Schedules = () => {
       .toDate(),
   }));
 
+  const formatRange = (period) => {
+    let finalRange = {};
+    if (Array.isArray(period)) {
+      finalRange = {
+        start: moment(period[0]).format("YYYY-MM-DD"),
+        end: moment(period[period.length - 1]).format("YYYY-MM-DD"),
+      };
+    } else {
+      finalRange = {
+        start: moment(period.start).format("YYYY-MM-DD"),
+        end: moment(period.end).format("YYYY-MM-DD"),
+      };
+    }
+    return finalRange;
+  };
+
   useEffect(() => {
     dispatch(
       schedulesFilter(
@@ -42,6 +58,11 @@ const Schedules = () => {
           <h2 className="mb-4 mt-0">Agendamentos</h2>
           <Calendar
             localizer={localizer}
+            onRangeChange={(period) => {
+              const { start, end } = formatRange(period);
+
+              dispatch(schedulesFilter(start, end));
+            }}
             events={formatEvents}
             defaultView="week"
             selectable
