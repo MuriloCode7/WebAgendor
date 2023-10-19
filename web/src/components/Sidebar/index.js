@@ -9,7 +9,7 @@ const Sidebar = () => {
     <sidebar className="col-2 h-100">
       <img src={logo} className="img-fluid px-3 py-4" alt="logo" />
       <ul>
-        <li>
+        <li> 
           <Link to="/schedules" className={location.pathname === '/schedules' ? 'active' : ''}>
             <span className="mdi mdi-calendar-check"></span>
             <text>Agendamentos</text>
