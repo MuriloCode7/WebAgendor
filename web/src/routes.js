@@ -7,6 +7,7 @@ import Sidebar from "./components/Sidebar";
 
 import Schedules from './pages/Schedules';
 import Customers from './pages/Customers';
+import Home from './pages/Home';
 
 const AllRoutes = () => {
   return (
@@ -17,6 +18,7 @@ const AllRoutes = () => {
           <Router>
             <Sidebar />
             <Routes>
+              <Route path="/" element={<Home/>}/>
               <Route path="/schedules" element={<Schedules/>}/>
               <Route path="/customers" element={<Customers/>}/>
             </Routes>
