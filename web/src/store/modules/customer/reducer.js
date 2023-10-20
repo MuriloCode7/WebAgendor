@@ -1,15 +1,15 @@
-import types from "./types";
 import { produce } from "immer";
+import types from "./types";
 
 const INITIAL_STATE = {
-  schedules: [],
+  cutomers: [],
 };
 
-function schedule(state = INITIAL_STATE, action) {
+function customer(state = INITIAL_STATE, action) {
   switch (action.type) {
-    case types.SCHEDULE_UPDATE: {
+    case types.UPDATE_CUSTOMER: {
       return produce(state, (draft) => {
-        draft.schedules = action.schedules;
+        draft = { ...draft, ...action.payload };
         return draft;
       });
     }
@@ -17,5 +17,4 @@ function schedule(state = INITIAL_STATE, action) {
       return state;
   }
 }
-
-export default schedule;
+export default customer;

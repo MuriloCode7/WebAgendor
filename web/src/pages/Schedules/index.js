@@ -49,7 +49,7 @@ const Schedules = () => {
         moment().weekday(6).format("YYYY-MM-DD")
       )
     );
-  }, []);
+  });
 
   return (
     <div className="col p-5 overflow-auto h-100">
