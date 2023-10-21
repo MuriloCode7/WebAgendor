@@ -1,5 +1,5 @@
 import { Table } from "rsuite";
-const { Column, HeaderCell, Cell, Pagination } = Table;
+const { Column, HeaderCell, Cell } = Table;
 
 const TableComponent = ({ data, config, actions, content, onRowClick }) => {
   return (
