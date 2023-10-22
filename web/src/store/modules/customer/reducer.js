@@ -2,7 +2,36 @@ import { produce } from "immer";
 import types from "./types";
 
 const INITIAL_STATE = {
+  behavior: "create",
+  components: {
+    drawer: false,
+    confirmDelete: false
+  },
+  form: {
+    filtering: false,
+    disabled: true,
+    saving: false
+  },
   cutomers: [],
+  customer: {
+    name: "",
+    email: "",
+    phone: "",
+    dateBirth: "M",
+    gender: "",
+    document: {
+      type: "cpf",
+      number: "",  
+    },
+    address: {
+      city: "",
+      uf: "",
+      cep: "",
+      number: "",
+      country: "BR",
+      street: "",
+    }
+  },
 };
 
 function customer(state = INITIAL_STATE, action) {

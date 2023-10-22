@@ -45,42 +45,55 @@ header span.mdi {
 }
 
 header small {
+  color: var(--dark);
   display: block;
   margin-top: -20px;
 }
 
-aside {
+sidebar {
   background-color: var(--dark);
+  min-width: 200px;
 }
 
-aside ul li {
+sidebar ul li {
   list-style: none;
   width: 100%;
 }
 
-aside ul li a {
+sidebar ul li a {
   width: 100%;
   color: #fff;
   opacity: 0.6;
+  text-decoration: none;
   display: flex;
   align-items: center;
   padding: 15px 10px;
-  margin: 2.5px 0;
+  margin: 2px 0;
   transition: 0.5s;
   border-radius: 5px;
+}
+
+sidebar ul li a.active,
+sidebar ul li a:hover {
+  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.6);
   text-decoration: none;
 }
 
-aside ul li a.active {
-  opacity: 1;
-  background-color: rgba(0, 0, 0, 0.6);
-}
-
-aside ul li a.active .mdi {
+sidebar ul li a.active .mdi {
   color: var(--primary);
 }
 
-aside ul li a.active,
-aside ul li a:focus {
+sidebar ul li a:visited,
+sidebar ul li a:focus {
   color: #fff;
+}
+
+sidebar ul li a.mdi {
+  font-size: 25px;
+  margin: 0 15px;
+}
+
+sidebar ul li a text {
+  font-size: 14px;
 }
