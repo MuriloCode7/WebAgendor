@@ -12,7 +12,7 @@ import {
 
 const Customers = () => {
   const dispatch = useDispatch();
-  const { customers, form, components } = useSelector(
+  const { customers, behavior, form, components } = useSelector(
     (state) => state.customer
   );
 
@@ -31,11 +31,39 @@ const Customers = () => {
   return (
     <div className="col p-5 overflow-auto h-100">
       <Drawer
-        show={components.drawer}
+        open={components.drawer}
         size="sm"
         onHide={() => setComponent("drawer", false)}
+        onClose={() => setComponent("drawer", false)}
       >
-        <Drawer.Body></Drawer.Body>
+        <Drawer.Body>
+          <h3>
+            {behavior === "create"
+              ? "Cadastrar novo cliente"
+              : "Atualizar dados do cliente"}
+          </h3>
+          <div className="form-group mb-3">
+            <b>E-mail</b>
+            <div className="input-group">
+              <input
+                type="email"
+                className="form-control"
+                placeholder="E-mail do cliente"
+                //value={customer.email}
+              />
+              <div className="input-group-append">
+                <Button
+                  appearance="primary"
+                  loading={form.filtering}
+                  disabled={form.filtering}
+                  onClick={() => {}}
+                >
+                  Pesquisar
+                </Button>
+              </div>
+            </div>
+          </div>
+        </Drawer.Body>
       </Drawer>
       <div className="row">
         <div className="col-12">
@@ -60,7 +88,7 @@ const Customers = () => {
           <Table
             loading={form.filtering}
             data={customers}
-            action='Ver informações'
+            action="Ver informações"
             config={[
               { label: "Nome", key: "name", width: 200, fixed: true },
               { label: "E-mail", key: "email", width: 200 },
