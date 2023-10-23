@@ -42,6 +42,12 @@ function customer(state = INITIAL_STATE, action) {
         return draft;
       });
     }
+    case types.RESET_CUSTOMER: {
+      return produce(state, (draft) => {
+        draft.customer = INITIAL_STATE.customer;
+        return draft;
+      });
+    }
     default:
       return state;
   }

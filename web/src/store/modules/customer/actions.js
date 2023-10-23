@@ -11,3 +11,15 @@ export function updateCustomer(payload) {
 export function filterCustomers() {
   return { type: types.FILTER_CUSTOMERS };
 }
+
+export function addCustomer() {
+  return { type: types.ADD_CUSTOMER };
+}
+
+export function resetCustomer() {
+  return { type: types.RESET_CUSTOMER };
+}
+
+export function unlinkCustomer() {
+  return { type: types.UNLINK_CUSTOMER };
+}
