@@ -8,11 +8,12 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   allCustomers,
   updateCustomer,
+  filterCustomers,
 } from "../../store/modules/customer/actions";
 
 const Customers = () => {
   const dispatch = useDispatch();
-  const { customers, behavior, form, components } = useSelector(
+  const { customers, behavior, customer, form, components } = useSelector(
     (state) => state.customer
   );
 
@@ -20,6 +21,14 @@ const Customers = () => {
     dispatch(
       updateCustomer({
         components: { ...components, [component]: state },
+      })
+    );
+  };
+
+  const setCustomer = (key, value) => {
+    dispatch(
+      updateCustomer({
+        customer: { ...customer, [key]: value },
       })
     );
   };
@@ -49,14 +58,16 @@ const Customers = () => {
                 type="email"
                 className="form-control"
                 placeholder="E-mail do cliente"
-                //value={customer.email}
+                value={customer.email}
+                onChange={(e) => setCustomer("email", e.target.value)}
               />
               <div className="input-group-append">
                 <Button
                   appearance="primary"
                   loading={form.filtering}
                   disabled={form.filtering}
-                  onClick={() => {}}
+                  onClick={() => dispatch(filterCustomers())}
+                  
                 >
                   Pesquisar
                 </Button>
