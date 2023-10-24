@@ -13,7 +13,7 @@ router.post("/", async (req, res) => {
    * e as alteracoes no bd sao desfeitas*/
   const db = mongoose.connection;
   const session = await db.startSession();
-  session.startTransaction();
+  //session.startTransaction();
 
   try {
     const { customer, companyId } = req.body;
@@ -92,7 +92,7 @@ router.post("/", async (req, res) => {
       }).save({ session });
     }
 
-    await session.commitTransaction();
+    //await session.commitTransaction();
     session.endSession();
 
     if (existsCustomer && existsRelationship) {
