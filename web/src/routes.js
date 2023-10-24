@@ -7,6 +7,7 @@ import Sidebar from "./components/Sidebar";
 
 import Schedules from './pages/Schedules';
 import Customers from './pages/Customers';
+import Colaborators from './pages/Colaborators';
 import Home from './pages/Home';
 
 const AllRoutes = () => {
@@ -21,6 +22,7 @@ const AllRoutes = () => {
               <Route path="/" element={<Home/>}/>
               <Route path="/schedules" element={<Schedules/>}/>
               <Route path="/customers" element={<Customers/>}/>
+              <Route path="/colaborators" element={<Colaborators/>}/>
             </Routes>
           </Router>
         </div>

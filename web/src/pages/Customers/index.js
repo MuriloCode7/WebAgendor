@@ -67,21 +67,24 @@ const Customers = () => {
               <div className="input-group">
                 <input
                   type="email"
+                  disabled={behavior === "update"}
                   className="form-control"
                   placeholder="E-mail do cliente"
                   value={customer.email}
                   onChange={(e) => setCustomer("email", e.target.value)}
                 />
-                <div className="input-group-append">
-                  <Button
-                    appearance="primary"
-                    loading={form.filtering}
-                    disabled={form.filtering}
-                    onClick={() => dispatch(filterCustomers())}
-                  >
-                    Pesquisar
-                  </Button>
-                </div>
+                {behavior === "create" && (
+                  <div className="input-group-append">
+                    <Button
+                      appearance="primary"
+                      loading={form.filtering}
+                      disabled={form.filtering}
+                      onClick={() => dispatch(filterCustomers())}
+                    >
+                      Pesquisar
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
             <div className="form-group col-6 mb-3">
@@ -275,7 +278,8 @@ const Customers = () => {
               fontSize: 24,
             }}
           />
-          {"  "} <br></br>Tem certeza que deseja excluir? <br></br>Essa ação será irreversível!
+          {"  "} <br></br>Tem certeza que deseja excluir? <br></br>Essa ação
+          será irreversível!
         </Modal.Body>
         <Modal.Footer>
           <Button
@@ -325,7 +329,11 @@ const Customers = () => {
               {
                 label: "Sexo",
                 content: (customer) =>
-                  customer.gender === "M" ? "Masculino" : "Feminino",
+                  customer.gender === "M"
+                    ? "Masculino"
+                    : customer.gender === "F"
+                    ? "Feminino"
+                    : "Outros",
                 width: 200,
               },
               {
