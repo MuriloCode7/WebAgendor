@@ -22,8 +22,8 @@ const INITIAL_STATE = {
     gender: "",
     bond: "A",
     specialties: [],
-    bakAccount: {
-      titular: "",
+    bankAccount: {
+      holder: "",
       cpfCnpj: "",
       bank: "",
       type: "",

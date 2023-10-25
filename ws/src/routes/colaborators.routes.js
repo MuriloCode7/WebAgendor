@@ -194,7 +194,7 @@ router.get("/company/:companyId", async (req, res) => {
 
       listColaborators.push({
         ...bond._doc,
-        specialties,
+        specialties: specialties.map(specialty => specialty.specialtyId)
       });
     }
 

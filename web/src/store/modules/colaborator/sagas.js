@@ -70,16 +70,25 @@ export function* filterColaborators() {
 }
 
 export function* addColaborator() {
-  const { form, colaborator, components } = yield select(
+  const { form, colaborator, components, behavior } = yield select(
     (state) => state.colaborator
   );
 
   try {
     yield put(updateColaborator({ form: { ...form, saving: true } }));
-    const { data: res } = yield call(api.post, "/colaborators", {
-      companyId: consts.companyId,
-      colaborator,
-    });
+
+    if(behavior === 'create') {
+      const { data: res } = yield call(api.post, "/colaborators", {
+        companyId: consts.companyId,
+        colaborator,
+      });
+    } else {
+      const { data: res } = yield call(api.post, "/colaborators", {
+        companyId: consts.companyId,
+        colaborator,
+      });
+    }
+    
 
     yield put(updateColaborator({ form: { ...form, saving: false } }));
 
@@ -143,7 +152,7 @@ export function* allSpecialties() {
 
     const { data: res } = yield call(
       api.get,
-      `/company/specialties/${consts.companyId}`
+      `/companies/specialties/${consts.companyId}`
     );
 
     yield put(updateColaborator({ form: { ...form, filtering: false } }));

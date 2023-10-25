@@ -129,7 +129,7 @@ const Customers = () => {
               >
                 <option value="M">Masculino</option>
                 <option value="F">Feminino</option>
-                <option value="O">Outros</option>
+                <option value="O">Outro</option>
               </select>
             </div>
             <div className="form-group col-6 mb-3">

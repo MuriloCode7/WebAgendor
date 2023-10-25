@@ -50,44 +50,35 @@ const colaborator = new Schema({
     default: "A",
   },
 
-  /*
-    bankAccount: {
+  bankAccount: {
     holder: {
       type: String,
-      required: true,
     },
     cpfCnpj: {
       type: String,
-      required: true,
     },
     bank: {
       type: String,
-      required: true,
     },
     type: {
       type: String,
-      required: true,
+      enum: ["CC", "CP"],
+      default: "CC"
     },
     agency: {
       type: String,
-      required: true,
     },
     number: {
       type: String,
-      required: true,
     },
     dv: {
       type: String,
-      required: true,
     },
   },
 
   recipientId: {
     type: String,
-    required: true,
   },
-
-  */
 
   dateRegister: {
     type: Date,

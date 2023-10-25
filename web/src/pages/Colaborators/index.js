@@ -1,8 +1,16 @@
 import { useEffect } from "react";
-import { Button, Drawer, Modal, IconButton } from "rsuite";
+import {
+  Button,
+  Drawer,
+  Modal,
+  IconButton,
+  TagPicker,
+  SelectPicker,
+} from "rsuite";
 import "rsuite/dist/rsuite.min.css";
 import Table from "../../components/Table";
 import moment from "moment";
+import banks from "../../data/banks.json";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -16,9 +24,8 @@ import {
 
 const Colaborators = () => {
   const dispatch = useDispatch();
-  const { colaborators, behavior, colaborator, form, components } = useSelector(
-    (state) => state.colaborator
-  );
+  const { colaborators, behavior, colaborator, form, components, specialties } =
+    useSelector((state) => state.colaborator);
 
   const setComponent = (component, state) => {
     dispatch(
@@ -36,6 +43,20 @@ const Colaborators = () => {
     );
   };
 
+  const setBankAccount = (key, value) => {
+    dispatch(
+      updateColaborator({
+        colaborator: {
+          ...colaborator,
+          bankAccount: {
+            ...colaborator.bankAccount,
+            [key]: value,
+          },
+        },
+      })
+    );
+  };
+
   const save = () => {
     dispatch(addColaborator());
   };
@@ -46,6 +67,7 @@ const Colaborators = () => {
 
   useEffect(() => {
     dispatch(allColaborators());
+    dispatch(allSpecialties());
   }, []);
 
   return (
@@ -88,7 +110,7 @@ const Colaborators = () => {
                 )}
               </div>
             </div>
-            <div className="form-group col-6">
+            <div className="form-group col-6 mb-3">
               <b>Nome</b>
               <input
                 type="text"
@@ -96,33 +118,185 @@ const Colaborators = () => {
                 disabled={form.disabled}
                 placeholder="Nome do colaborador"
                 value={colaborator.name}
-                onChange={(e) => setColaborator('name', e.target.value)} 
+                onChange={(e) => setColaborator("name", e.target.value)}
               />
             </div>
-            <div className="form-group col-6">
+            <div className="form-group col-6 mb-3">
               <b>Status</b>
               <select
                 className="form-control"
-                disabled={form.disabled && behavior === 'create'}
+                disabled={form.disabled && behavior === "create"}
                 value={colaborator.bond}
-                onChange={(e) => setColaborator('bond', e.target.value)}
+                onChange={(e) => setColaborator("bond", e.target.value)}
               >
                 <option value="A">Ativo</option>
                 <option value="I">Inativo</option>
               </select>
             </div>
-            <div className="form-group col-4">
+            <div className="form-group col-4 mb-3">
               <b>Telefone / Whatsapp</b>
               <input
                 type="text"
                 className="form-control"
                 disabled={form.disabled}
-                placeholder="Nome do colaborador"
-                value={colaborator.name}
-                onChange={(e) => setColaborator('name', e.target.value)} 
+                placeholder="Telefone / Whatsapp do colaborador"
+                value={colaborator.phone}
+                onChange={(e) => setColaborator("phone", e.target.value)}
               />
             </div>
+            <div className="form-group col-4 mb-3">
+              <b>Data de nascimento</b>
+              <input
+                type="date"
+                className="form-control"
+                disabled={form.disabled}
+                placeholder="Data de nascimento do colaborador"
+                value={colaborator.dateBirth}
+                onChange={(e) => setColaborator("dateBirth", e.target.value)}
+              />
+            </div>
+            <div className="form-group col-4 mb-3">
+              <b>Sexo</b>
+              <select
+                className="form-control"
+                disabled={form.disabled}
+                value={colaborator.gender}
+                onChange={(e) => setColaborator("gender", e.target.value)}
+              >
+                <option value="M">Masculino</option>
+                <option value="F">Feminino</option>
+                <option value="O">Outro</option>
+              </select>
+            </div>
+            {/* Especialidades */}
+            <div className="col-12 mb-3">
+              <b>Especialidades</b>
+              <TagPicker
+                size="lg"
+                block
+                data={specialties}
+                disabled={form.disabled && behavior === "create"}
+                value={colaborator.specialties}
+                onChange={(specialty) =>
+                  setColaborator("specialties", specialty)
+                }
+              />
+            </div>
+
+            {/* Dados da conta bancaria */}
+            <div className="row">
+              <h4 className="mb-3">Dados da conta bancária</h4>
+              {/* Titular */}
+              <div className="form-group col-6 mb-3">
+                <b>Titular da conta</b>
+                <input
+                  type="text"
+                  className="form-control"
+                  disabled={form.disabled}
+                  placeholder="Nome do titular da conta"
+                  value={colaborator.bankAccount.holder}
+                  onChange={(e) => setBankAccount("holder", e.target.value)}
+                />
+              </div>
+              {/* CPF/CNPJ */}
+              <div className="form-group col-6 mb-3">
+                <b>CPF/CNPJ</b>
+                <input
+                  type="text"
+                  className="form-control"
+                  disabled={form.disabled}
+                  placeholder="CPF/CNPJ do titular"
+                  value={colaborator.bankAccount.cpfCnpj}
+                  onChange={(e) => setBankAccount("cpfCnpj", e.target.value)}
+                />
+              </div>
+              {/* Banco */}
+              <div className="form-group col-6 mb-3">
+                <b>Banco</b>
+                <SelectPicker
+                  disabled={form.disabled}
+                  value={colaborator.bankAccount.bank}
+                  onChange={(bank) => setBankAccount("bank", bank)}
+                  block
+                  size="lg"
+                  data={banks}
+                />
+              </div>
+              {/* Tipo de conta */}
+              <div className="form-group col-6 mb-3">
+                <b>Tipo de conta</b>
+                <select
+                  className="form-control"
+                  disabled={form.disabled}
+                  value={colaborator.bankAccount.type}
+                  onChange={(e) => setBankAccount("type", e.target.value)}
+                >
+                  <option value="CC">Conta corrente</option>
+                  <option value="CP">Conta poupança</option>
+                </select>
+              </div>
+              {/* Agência */}
+              <div className="form-group col-6 mb-3">
+                <b>Agência</b>
+                <input
+                  type="text"
+                  className="form-control"
+                  disabled={form.disabled}
+                  placeholder="Agência"
+                  value={colaborator.bankAccount.agency}
+                  onChange={(e) => setBankAccount("agency", e.target.value)}
+                />
+              </div>
+              {/* Numero da conta */}
+              <div className="form-group col-4 mb-3">
+                <b>Número da conta</b>
+                <input
+                  type="text"
+                  className="form-control"
+                  disabled={form.disabled}
+                  placeholder="Número da conta"
+                  value={colaborator.bankAccount.number}
+                  onChange={(e) => setBankAccount("number", e.target.value)}
+                />
+              </div>
+              {/* Dígito verificador */}
+              <div className="form-group col-2 mb-3">
+                <b>Dígito</b>
+                <input
+                  type="text"
+                  className="form-control"
+                  disabled={form.disabled}
+                  placeholder="DV"
+                  value={colaborator.bankAccount.dv}
+                  onChange={(e) => setBankAccount("dv", e.target.value)}
+                />
+              </div>
+            </div>
           </div>
+          <Button
+            loading={form.saving}
+            appearance="primary"
+            color={behavior === 'create' ? 'green' : 'primary'}
+            size="lg"
+            block
+            onClick={() => save()}
+            className="mt-3"
+          >
+            {behavior === 'create' ? 'Salvar' : 'Atualizar'} colaborador
+          </Button>
+          {behavior === 'update' && (
+            <Button
+              appearance="primary"
+              loading={form.saving}
+              color="red"
+              size="lg"
+              block
+              onClick={() => setComponent('confirmDelete', true)}
+              className="mt-1"
+            >
+              Remover colaborador
+            </Button>
+          )}
         </Drawer.Body>
       </Drawer>
 

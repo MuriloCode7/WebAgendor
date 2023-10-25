@@ -25,5 +25,5 @@ export function unlinkColaborator() {
 }
 
 export function allSpecialties() {
-  return { type: types.allSpecialties };
+  return { type: types.ALL_SPECIALTIES };
 }
