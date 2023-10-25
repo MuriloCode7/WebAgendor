@@ -100,11 +100,27 @@ const Colaborators = () => {
               />
             </div>
             <div className="form-group col-6">
-              <b>Nome</b>
-              <select>
+              <b>Status</b>
+              <select
+                className="form-control"
+                disabled={form.disabled && behavior === 'create'}
+                value={colaborator.bond}
+                onChange={(e) => setColaborator('bond', e.target.value)}
+              >
                 <option value="A">Ativo</option>
                 <option value="I">Inativo</option>
               </select>
+            </div>
+            <div className="form-group col-4">
+              <b>Telefone / Whatsapp</b>
+              <input
+                type="text"
+                className="form-control"
+                disabled={form.disabled}
+                placeholder="Nome do colaborador"
+                value={colaborator.name}
+                onChange={(e) => setColaborator('name', e.target.value)} 
+              />
             </div>
           </div>
         </Drawer.Body>
