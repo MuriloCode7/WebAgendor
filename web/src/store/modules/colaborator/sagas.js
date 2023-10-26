@@ -76,17 +76,21 @@ export function* addColaborator() {
 
   try {
     yield put(updateColaborator({ form: { ...form, saving: true } }));
+    let res = {};
 
     if(behavior === 'create') {
-      const { data: res } = yield call(api.post, "/colaborators", {
+      const response = yield call(api.post, "/colaborators", {
         companyId: consts.companyId,
         colaborator,
       });
+      res = response.data;
     } else {
-      const { data: res } = yield call(api.post, "/colaborators", {
-        companyId: consts.companyId,
-        colaborator,
+      const response = yield call(api.put, `/colaborators/${colaborator._id}`, {
+        bond: colaborator.bond,
+        bondId: colaborator.bondId,
+        specialties: colaborator.specialties
       });
+      res = response.data;
     }
     
 

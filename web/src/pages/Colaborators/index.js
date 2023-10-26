@@ -231,8 +231,8 @@ const Colaborators = () => {
                   value={colaborator.bankAccount.type}
                   onChange={(e) => setBankAccount("type", e.target.value)}
                 >
-                  <option value="CC">Conta corrente</option>
-                  <option value="CP">Conta poupança</option>
+                  <option value="conta_corrente">Conta corrente</option>
+                  <option value="conta_poupanca">Conta poupança</option>
                 </select>
               </div>
               {/* Agência */}

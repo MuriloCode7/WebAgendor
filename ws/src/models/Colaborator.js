@@ -62,8 +62,8 @@ const colaborator = new Schema({
     },
     type: {
       type: String,
-      enum: ["CC", "CP"],
-      default: "CC"
+      enum: ["conta_corrente", "conta_poupanca"],
+      default: "conta_corrente"
     },
     agency: {
       type: String,
