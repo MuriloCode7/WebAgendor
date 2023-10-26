@@ -42,6 +42,7 @@ router.post('/', async (req, res) => {
           files.push(path); // remover essa linha apos atualizacao
 
           // Descomentar apos atualizar aws para versao 3
+          // console.log(path)
           // const response = await aws.uploadToS3(file, path);
 
           // if (response.error) {
@@ -178,13 +179,13 @@ router.get('/company/:companyId', async (req, res) => {
 /** Rota para deletar um arquivo da specialty */
 router.post('/remove-file', async (req, res) => {
   try { 
-    const { id } = req.body;
+    const { key } = req.body;
 
     /**Excluindo da aws */
     //await aws.deleteFileS3(id);
 
     await File.findOneAndDelete({
-      path: id,
+      path: key,
     });
 
     res.json({error: false});

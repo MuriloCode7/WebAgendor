@@ -21,7 +21,7 @@ const INITIAL_STATE = {
     duration: moment('00:30', 'HH:mm').format(),
     recurrence: "",
     description: "",
-    status: "",
+    status: "A",
     files: [],
   },
 };

@@ -3,7 +3,6 @@ import {
   updateSpecialty,
   allSpecialties as allSpecialtiesAction,
   resetSpecialty,
-  addSpecialty,
 } from "./actions";
 import types from "./types";
 import api from "../../../services/api";
@@ -33,30 +32,27 @@ export function* allSpecialties() {
   }
 }
 
-export function* addColaborator() {
+export function* addSpecialty() {
   const { form, specialty, components, behavior } = yield select(
     (state) => state.specialty
   );
 
   try {
     yield put(updateSpecialty({ form: { ...form, saving: true } }));
-    let res = {};
 
-    if(behavior === 'create') {
-      const response = yield call(api.post, "/specialties", {
-        companyId: consts.companyId,
-        specialty,
-      });
-      res = response.data;
-    } else {
-      const response = yield call(api.put, `/specialties/${specialty._id}`, {
-        bond: specialty.bond,
-        bondId: specialty.bondId,
-        specialties: specialty.specialties
-      });
-      res = response.data;
-    }
-    
+    const formData = new FormData();
+    formData.append(
+      "specialty",
+      JSON.stringify({ ...specialty, companyId: consts.companyId }));
+    formData.append("companyId", consts.companyId);
+    specialty.files.map((f, i) => {
+      formData.append(`file_${i}`, f);
+    });
+
+    const { data: res } = yield call(
+      api[behavior === "create" ? "post" : "put"],
+      behavior === "create" ? "/specialties" : `/specialties/${specialty._id}`
+    );
 
     yield put(updateSpecialty({ form: { ...form, saving: false } }));
 
@@ -85,7 +81,7 @@ export function* removeSpecialty() {
     yield put(updateSpecialty({ form: { ...form, saving: true } }));
     const { data: res } = yield call(
       api.delete,
-      `/specialties/bond/${specialty.bondId}`
+      `/specialties/${specialty._id}`
     );
 
     yield put(
@@ -112,17 +108,14 @@ export function* removeSpecialty() {
   }
 }
 
-export function* removeFile() {
-  const { form, specialty, components } = yield select(
-    (state) => state.specialty
-  );
+export function* removeFile(key) {
+  const { form } = yield select((state) => state.specialty);
 
   try {
     yield put(updateSpecialty({ form: { ...form, saving: true } }));
-    const { data: res } = yield call(
-      api.delete,
-      `/specialties/bond/${specialty.bondId}`
-    );
+    const { data: res } = yield call(api.post, `/specialties/delete-file/`, {
+      key,
+    });
 
     yield put(
       updateSpecialty({
@@ -134,20 +127,11 @@ export function* removeFile() {
       alert(res.message);
       return false;
     }
-
-    yield put(allSpecialtiesAction());
-    yield put(
-      updateSpecialty({
-        components: { ...components, drawer: false, confirmDelete: false },
-      })
-    );
-    yield put(resetSpecialty());
   } catch (err) {
     yield put(updateSpecialty({ form: { ...form, saving: false } }));
     alert(err.message);
   }
 }
-
 
 export default all([
   takeLatest(types.ALL_SPECIALTIES, allSpecialties),

@@ -16,7 +16,7 @@ export function allSpecialties() {
   return { type: types.ALL_SPECIALTIES };
 }
 
-export function removeFile() {
+export function removeFile(key) {
   return { type: types.REMOVE_FILE };
 }
 

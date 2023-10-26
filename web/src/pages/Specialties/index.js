@@ -12,7 +12,8 @@ import "rsuite/dist/rsuite.min.css";
 import Table from "../../components/Table";
 import moment from "moment";
 
-import PlayOutlineIcon from '@rsuite/icons/PlayOutline'; 
+import PlayOutlineIcon from "@rsuite/icons/PlayOutline";
+import consts from "../../consts";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -20,6 +21,8 @@ import {
   updateSpecialty,
   addSpecialty,
   removeSpecialty,
+  removeFile,
+  resetSpecialty,
 } from "../../store/modules/specialty/actions";
 
 const Specialties = () => {
@@ -139,7 +142,7 @@ const Specialties = () => {
                 <option value="I">Inativo</option>
               </select>
             </div>
-            <div className="form-group col-12">
+            <div className="form-group col-12 mb-3">
               <b>Descrição</b>
               <textarea
                 rows="5"
@@ -149,18 +152,64 @@ const Specialties = () => {
                 onChange={(e) => setSpecialty("description", e.target.value)}
               ></textarea>
             </div>
-            <div className="form-group col-12">
+            <div className="form-group col-12 mb-3">
               <b className="d-block">Imagens do serviço</b>
-              <Uploader>
+              <Uploader
+                multiple
+                autoUpload={false}
+                listType="picture"
+                defaultFileList={specialty.files.map((specialty, index) => ({
+                  name: "specialty?.path",
+                  fileKey: index,
+                  url: `${consts.bucketUrl}/${specialty?.path}`,
+                }))}
+                onChange={(files) => {
+                  const newFiles = files
+                    .filter((f) => f.blobFile)
+                    .map((f) => f.blobFile);
+
+                  setSpecialty("files", newFiles);
+                }}
+                onRemove={(file) => {
+                  if (behavior === "update" && file.url) {
+                    dispatch(removeFile(file.name));
+                  }
+                }}
+              >
                 <button>
-                  <IconButton icon={<PlayOutlineIcon />} 
-                     placement="left"> 
-                    Play 
-                </IconButton> 
+                  <IconButton
+                    icon={<PlayOutlineIcon />}
+                    placement="center"
+                  ></IconButton>
                 </button>
               </Uploader>
             </div>
           </div>
+
+          <Button
+            loading={form.saving}
+            color={behavior === "create" ? "green" : "primary"}
+            appearance="primary"
+            size="lg"
+            block
+            onClick={() => save()}
+            className="mt-3"
+          >
+            {behavior === "create" ? "Salvar" : "Atualizar"} serviço
+          </Button>
+          {behavior === "update" && (
+            <Button
+              loading={form.saving}
+              appearance="primary"
+              color="red"
+              size="lg"
+              block
+              onClick={() => setComponent("confirmDelete", true)}
+              className="mt-1"
+            >
+              Remover serviço
+            </Button>
+          )}
         </Drawer.Body>
       </Drawer>
 
@@ -210,6 +259,7 @@ const Specialties = () => {
                       behavior: "create",
                     })
                   );
+                  dispatch(resetSpecialty());
                   setComponent("drawer", true);
                 }}
               >
