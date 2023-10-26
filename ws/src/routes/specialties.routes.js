@@ -170,8 +170,6 @@ router.get('/company/:companyId', async (req, res) => {
     res.json({
       specialties: specialtiesCompany,
     });
-
-    res.json({});
   } catch (err) {
     res.json({ error: true, message: err.message });
   }

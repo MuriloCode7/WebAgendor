@@ -38,6 +38,15 @@ const Sidebar = () => {
             <text>Colaboradores</text>
           </Link>
         </li>
+        <li>
+          <Link
+            to="/specialties"
+            className={location.pathname === "/specialties" ? "active" : ""}
+          >
+            <span className="mdi mdi-auto-fix px-2"></span>
+            <text>Serviços</text>
+          </Link>
+        </li>
       </ul>
     </sidebar>
   );

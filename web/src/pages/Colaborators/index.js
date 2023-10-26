@@ -67,7 +67,6 @@ const Colaborators = () => {
 
   useEffect(() => {
     dispatch(allColaborators());
-    dispatch(allSpecialties());
   }, []);
 
   return (
