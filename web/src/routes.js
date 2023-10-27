@@ -9,6 +9,7 @@ import Schedules from './pages/Schedules';
 import Customers from './pages/Customers';
 import Colaborators from './pages/Colaborators';
 import Specialties from './pages/Specialties';
+import TimeTables from './pages/TimeTables';
 import Home from './pages/Home';
 
 const AllRoutes = () => {
@@ -25,6 +26,7 @@ const AllRoutes = () => {
               <Route path="/customers" element={<Customers/>}/>
               <Route path="/colaborators" element={<Colaborators/>}/>
               <Route path="/specialties" element={<Specialties/>}/>
+              <Route path="/timeTables" element={<TimeTables/>}/>
             </Routes>
           </Router>
         </div>

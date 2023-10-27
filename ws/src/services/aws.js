@@ -1,24 +1,36 @@
-const AWS = require('aws-sdk');
+// const { S3 } = require("@aws-sdk/client-s3");
+// const s3 = new S3({ region: "us-east-1" });
+
+// var bucketParams = {
+//   accessKeyId: IAM_USER_KEY,
+//   secretAccessKey: IAM_USER_SECRET,
+//   Bucket: BUCKET_NAME,
+// };
+
+// function run() {
+//   s3.createBucket(bucketParams, function(err, data){
+//     if (err) {
+//       console.log("Error", err);
+//       } else {
+//       console.log("Success", data.Location);
+//       }
+//   })
+// }
 
 module.exports = {
-  IAM_USER_KEY: 'AKIAZ5RJV5EXB67GBTOY',
-  IAM_USER_SECRET: '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',
-  BUCKET_NAME: 'web-agendor',
-  AWS_REGION: 'us-east-1',
+  IAM_USER_KEY: "AKIAZ5RJV5EXB67GBTOY",
+  IAM_USER_SECRET: "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",
+  BUCKET_NAME: "web-agendor",
+  AWS_REGION: "us-east-1",
 
   /* Função de upload de arquivos no aws  */
-  uploadToS3: function (file, filename, acl = 'public-read') {
+  uploadToS3: function (file, filename, acl = "public-read") {
     return new Promise((resolve, reject) => {
       /* Infos necessarias */
       let IAM_USER_KEY = this.IAM_USER_KEY;
       let IAM_USER_SECRET = this.IAM_USER_SECRET;
       let BUCKET_NAME = this.BUCKET_NAME;
 
-      let s3bucket = new AWS.S3({
-        accessKeyId: IAM_USER_KEY,
-        secretAccessKey: IAM_USER_SECRET,
-        Bucket: BUCKET_NAME,
-      });
 
       s3bucket.createBucket(function () {
         var params = {
@@ -67,7 +79,7 @@ module.exports = {
             }
             console.log(data);
             return resolve({ error: false, message: data });
-          },
+          }
         );
       });
     });

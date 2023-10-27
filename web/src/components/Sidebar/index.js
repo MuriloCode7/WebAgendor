@@ -47,6 +47,15 @@ const Sidebar = () => {
             <text>Serviços</text>
           </Link>
         </li>
+        <li>
+          <Link
+            to="/timeTables"
+            className={location.pathname === "/timeTables" ? "active" : ""}
+          >
+            <span className="mdi mdi-clock-check-outline px-2"></span>
+            <text>Horários</text>
+          </Link>
+        </li>
       </ul>
     </sidebar>
   );
