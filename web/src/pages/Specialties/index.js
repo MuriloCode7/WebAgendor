@@ -118,19 +118,19 @@ const Specialties = () => {
                 }}
               />
             </div>
-            {/* <div className="form-group col-4 mb-3">
+            <div className="form-group col-4 mb-3">
               <b className="d-block">Duração</b>
               <DatePicker
                 block
                 format="HH:mm"
-                value={specialty.duration}
+                value={new Date(specialty.duration)}
                 // Aqui é definido para aparecer somente os minutos 0 e 30
                 hideMinutes={(min) => ![0, 30].includes(min)}
                 onChange={(e) => {
                   setSpecialty("duration", e);
                 }}
               />
-            </div> */}
+            </div>
             <div className="form-group col-4 mb-3">
               <b>Status</b>
               <select

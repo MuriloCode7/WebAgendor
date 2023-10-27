@@ -1,4 +1,4 @@
-const environment = "local";
+const environment = "online";
 
 const consts =
   environment === "online"

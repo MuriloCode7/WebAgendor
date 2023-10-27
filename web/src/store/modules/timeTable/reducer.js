@@ -1,12 +1,13 @@
 import { produce } from "immer";
 import types from "./types";
+import moment from "moment";
 
 const INITIAL_STATE = {
   behavior: "create",
   components: {
     drawer: false,
     confirmDelete: false,
-    view: 'week'
+    defaultView: 'week'
   },
   form: {
     filtering: false,
@@ -18,8 +19,8 @@ const INITIAL_STATE = {
   timeTables: [],
   timeTable: {
     days: [],
-    startTime: "",
-    endTime: "",
+    startTime: new Date(moment()),
+    endTime: new Date(moment().add(30, 'minutes')),
     specialties: [],
     colaborators: [],
   },
@@ -33,7 +34,7 @@ function timeTable(state = INITIAL_STATE, action) {
         return draft;
       });
     }
-    case types.REMOVE_TIMETABLE: {
+    case types.RESET_TIMETABLE: {
       return produce(state, (draft) => {
         draft.timeTable = INITIAL_STATE.timeTable;
         return draft;
