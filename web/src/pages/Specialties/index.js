@@ -64,7 +64,6 @@ const Specialties = () => {
       <Drawer
         open={components.drawer}
         size="sm"
-        onHide={() => setComponent("drawer", false)}
         onClose={() => setComponent("drawer", false)}
       >
         <Drawer.Body>
@@ -153,10 +152,11 @@ const Specialties = () => {
               ></textarea>
             </div>
             <div className="form-group col-12 mb-3">
-              <b className="d-block">Imagens do serviço</b>
+              <b className="d-block">Imagens do serviço {'(DESABILITADO PARA CORREÇÃO NO UPLOAD)'}</b>
               <Uploader
                 multiple
                 autoUpload={false}
+                disabled={true}
                 listType="picture"
                 defaultFileList={specialty.files.map((specialty, index) => ({
                   name: "specialty?.path",
@@ -216,7 +216,6 @@ const Specialties = () => {
       <Modal
         open={components.confirmDelete}
         size="xs"
-        onHide={() => setComponent("confirmDelete", false)}
       >
         <Modal.Body>
           <IconButton

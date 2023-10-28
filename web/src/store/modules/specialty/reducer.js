@@ -1,6 +1,7 @@
 import { produce } from "immer";
 import types from "./types";
 import moment from 'moment'
+import consts from "../../../consts";
 
 const INITIAL_STATE = {
   behavior: "create",
@@ -15,14 +16,15 @@ const INITIAL_STATE = {
   },
   specialties: [],
   specialty: {
+    companyId: consts.companyId,
     title: "",
-    preco: 0,
+    price: 0,
     commission: 0,
     duration: moment('00:30', 'HH:mm').format(),
     recurrence: "",
     description: "",
     status: "A",
-    files: [],
+    files: []
   },
 };
 

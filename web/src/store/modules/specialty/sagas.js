@@ -40,18 +40,22 @@ export function* addSpecialty() {
   try {
     yield put(updateSpecialty({ form: { ...form, saving: true } }));
 
-    const formData = new FormData();
-    formData.append(
-      "specialty",
-      JSON.stringify({ ...specialty, companyId: consts.companyId }));
-    formData.append("companyId", consts.companyId);
-    specialty.files.map((f, i) => {
-      formData.append(`file_${i}`, f);
-    });
+    /**Comentado para correcao do upload de arquivos */
+    // const formData = new FormData();
+    // formData.append(
+    //   "specialty",
+    //   JSON.stringify({ ...specialty, companyId: consts.companyId }));
+    // formData.append("companyId", consts.companyId);
+    // specialty.files.map((f, i) => {
+    //   formData.append(`file_${i}`, f);
+    // });
 
     const { data: res } = yield call(
       api[behavior === "create" ? "post" : "put"],
-      behavior === "create" ? "/specialties" : `/specialties/${specialty._id}`
+      behavior === "create" ? "/specialties" : `/specialties/${specialty._id}`, {
+        companyId: consts.companyId,
+        specialty
+      }
     );
 
     yield put(updateSpecialty({ form: { ...form, saving: false } }));

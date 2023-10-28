@@ -11,6 +11,7 @@ import {
   filterCustomers,
   addCustomer,
   unlinkCustomer,
+  resetCustomer,
 } from "../../store/modules/customer/actions";
 
 const Customers = () => {
@@ -311,6 +312,7 @@ const Customers = () => {
                       behavior: "create",
                     })
                   );
+                  dispatch(resetCustomer());
                   setComponent("drawer", true);
                 }}
               >

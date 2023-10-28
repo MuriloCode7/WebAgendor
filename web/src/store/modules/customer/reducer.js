@@ -17,8 +17,8 @@ const INITIAL_STATE = {
     name: "",
     email: "",
     phone: "",
-    dateBirth: "M",
-    gender: "",
+    dateBirth: "",
+    gender: "M",
     document: {
       type: "cpf",
       number: "",  
