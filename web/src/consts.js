@@ -3,7 +3,7 @@ const environment = "online";
 const consts =
   environment === "online"
     ? {
-        companyId: "65242a3c69e74cdf01e6ee77",
+        companyId: "653d64638eb8e084ce022b1d",
         customerId: "6529748fc77e296401bdc64c",
         bucketUrl: ''
       }
