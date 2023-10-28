@@ -1,7 +1,31 @@
+import moment from "moment";
+import consts from "../../../consts";
 import types from "./types";
 import { produce } from "immer";
 
 const INITIAL_STATE = {
+  behavior: "create",
+  components: {
+    drawer: false,
+    confirmDelete: false,
+    defaultView: "week",
+  },
+  form: {
+    saving: false,
+    disabled: true,
+    filtering: false,
+  },
+  schedule: {
+    companyId: consts.companyId,
+    customerId: "",
+    colaboratorId: "",
+    specialtyId: "",
+    date: new Date(moment()),
+    value: 0,
+  },
+  customers: [],
+  colaborators: [],
+  specialties: [],
   schedules: [],
 };
 
@@ -9,7 +33,13 @@ function schedule(state = INITIAL_STATE, action) {
   switch (action.type) {
     case types.SCHEDULE_UPDATE: {
       return produce(state, (draft) => {
-        draft.schedules = action.schedules;
+        draft = { ...draft, ...action.payload };
+        return draft;
+      });
+    }
+    case types.SCHEDULE_RESET: {
+      return produce(state, (draft) => {
+        draft.schedule = INITIAL_STATE.schedule;
         return draft;
       });
     }

@@ -118,7 +118,6 @@ const TimeTables = () => {
       <Drawer
         open={components.drawer}
         size="sm"
-        onHide={() => setComponent("drawer", false)}
         onClose={() => setComponent("drawer", false)}
       >
         <Drawer.Body>

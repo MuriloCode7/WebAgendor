@@ -2,7 +2,7 @@ import { all, takeLatest, call, put } from "redux-saga/effects";
 import api from "../../../services/api";
 import consts from "../../../consts";
 import types from "./types";
-import { scheduleUpdate } from "./actions";
+import { updateSchedule } from "./actions";
 
 export function* filterSchedule({ start, end }) {
   try {
@@ -19,10 +19,11 @@ export function* filterSchedule({ start, end }) {
       return false;
     }
 
-    yield put(scheduleUpdate(res.schedules));
+    yield put(updateSchedule({schedules: res.schedules}));
   } catch (err) {
     alert(err.message);
   }
 }
+
 
 export default all([takeLatest(types.SCHEDULES_FILTER, filterSchedule)]);

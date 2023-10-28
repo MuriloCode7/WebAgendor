@@ -1,17 +1,33 @@
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import moment from "moment";
+import { Drawer } from "rsuite";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import utils from "../../utils";
+import "moment/locale/pt-br";
 
-import { schedulesFilter } from "../../store/modules/schedule/actions";
+import {
+  resetSchedule,
+  schedulesFilter,
+  updateSchedule,
+} from "../../store/modules/schedule/actions";
 
+moment.locale("pt-br");
 const localizer = momentLocalizer(moment);
 
 const Schedules = () => {
   const dispatch = useDispatch();
-  const { schedules } = useSelector((state) => state.schedule);
+  const {
+    schedules,
+    components,
+    form,
+    schedule,
+    colaborators,
+    specialties,
+    customers,
+    behavior,
+  } = useSelector((state) => state.schedule);
 
   const formatEvents = schedules.map((schedule) => ({
     title: `${schedule.specialtyId.title} - ${schedule.customerId.name} - ${schedule.colaboratorId.name}`,
@@ -42,6 +58,14 @@ const Schedules = () => {
     return finalRange;
   };
 
+  const setComponent = (component, state) => {
+    dispatch(
+      updateSchedule({
+        components: { ...components, [component]: state },
+      })
+    );
+  };
+
   useEffect(() => {
     dispatch(
       schedulesFilter(
@@ -53,14 +77,42 @@ const Schedules = () => {
 
   return (
     <div className="col p-5 overflow-auto h-100">
+      <Drawer
+        open={components.drawer}
+        size="sm"
+        onClose={() => setComponent("drawer", false)}
+      >
+        <Drawer.Body>
+          <h3>
+            {behavior === "create" ? "Criar novo" : "Atualizar"} agendamento
+          </h3>
+        </Drawer.Body>
+      </Drawer>
       <div className="row">
         <div className="col-12">
-          <h2 className="mb-4 mt-0">Agendamentos</h2>
+          <div className="w-100 d-flex justify-content-between">
+            <h2 className="mb-4 mt-0">Agendamentos</h2>
+            <div>
+              <button
+                className="btn btn-primary btn-lg"
+                onClick={() => {
+                  dispatch(
+                    updateSchedule({
+                      behavior: "create",
+                    })
+                  );
+                  dispatch(resetSchedule());
+                  setComponent("drawer", true);
+                }}
+              >
+                <span className="mdi mdi-plus">Novo Agendamento</span>
+              </button>
+            </div>
+          </div>
           <Calendar
             localizer={localizer}
             onRangeChange={(period) => {
               const { start, end } = formatRange(period);
-
               dispatch(schedulesFilter(start, end));
             }}
             events={formatEvents}
