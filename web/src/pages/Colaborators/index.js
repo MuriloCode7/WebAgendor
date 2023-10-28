@@ -20,6 +20,7 @@ import {
   addColaborator,
   unlinkColaborator,
   allSpecialties,
+  resetColaborator,
 } from "../../store/modules/colaborator/actions";
 
 const Colaborators = () => {
@@ -67,6 +68,7 @@ const Colaborators = () => {
 
   useEffect(() => {
     dispatch(allColaborators());
+    dispatch(allSpecialties());
   }, []);
 
   return (
@@ -74,7 +76,6 @@ const Colaborators = () => {
       <Drawer
         open={components.drawer}
         size="sm"
-        onHide={() => setComponent("drawer", false)}
         onClose={() => setComponent("drawer", false)}
       >
         <Drawer.Body>
@@ -176,8 +177,8 @@ const Colaborators = () => {
                 data={specialties}
                 disabled={form.disabled && behavior === "create"}
                 value={colaborator.specialties}
-                onChange={(specialty) =>
-                  setColaborator("specialties", specialty)
+                onChange={(e) =>
+                  setColaborator("specialties", e)
                 }
               />
             </div>
@@ -275,22 +276,22 @@ const Colaborators = () => {
           <Button
             loading={form.saving}
             appearance="primary"
-            color={behavior === 'create' ? 'green' : 'primary'}
+            color={behavior === "create" ? "green" : "primary"}
             size="lg"
             block
             onClick={() => save()}
             className="mt-3"
           >
-            {behavior === 'create' ? 'Salvar' : 'Atualizar'} colaborador
+            {behavior === "create" ? "Salvar" : "Atualizar"} colaborador
           </Button>
-          {behavior === 'update' && (
+          {behavior === "update" && (
             <Button
               appearance="primary"
               loading={form.saving}
               color="red"
               size="lg"
               block
-              onClick={() => setComponent('confirmDelete', true)}
+              onClick={() => setComponent("confirmDelete", true)}
               className="mt-1"
             >
               Remover colaborador
@@ -345,6 +346,7 @@ const Colaborators = () => {
                       behavior: "create",
                     })
                   );
+                  dispatch(resetColaborator());
                   setComponent("drawer", true);
                 }}
               >

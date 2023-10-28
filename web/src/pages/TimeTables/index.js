@@ -18,6 +18,7 @@ import {
   filterColaborators,
   addTimeTable,
   removeTimeTable,
+  resetTimeTable,
 } from "../../store/modules/timeTable/actions";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -258,6 +259,7 @@ const TimeTables = () => {
                       behavior: "create",
                     })
                   );
+                  dispatch(resetTimeTable());
                   setComponent("drawer", true);
                 }}
               >
@@ -283,16 +285,16 @@ const TimeTables = () => {
               const { start, end } = slotInfo;
               dispatch(
                 updateTimeTable({
-                  behavior: 'create',
+                  behavior: "create",
                   timeTable: {
                     ...timeTable,
                     days: [moment(start).day()],
                     startTime: start,
-                    endTime: end
+                    endTime: end,
                   },
                 })
               );
-              setComponent('drawer', true)
+              setComponent("drawer", true);
             }}
             localizer={localizer}
             toolbar={false}
