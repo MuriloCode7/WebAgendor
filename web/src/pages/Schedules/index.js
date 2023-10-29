@@ -1,7 +1,7 @@
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import moment from "moment";
-import { Drawer } from "rsuite";
+import { Drawer, SelectPicker } from "rsuite";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import utils from "../../utils";
@@ -11,6 +11,8 @@ import {
   resetSchedule,
   schedulesFilter,
   updateSchedule,
+  allSpecialties,
+  allCustomers,
 } from "../../store/modules/schedule/actions";
 
 moment.locale("pt-br");
@@ -30,6 +32,7 @@ const Schedules = () => {
   } = useSelector((state) => state.schedule);
 
   const formatEvents = schedules.map((schedule) => ({
+    resource: schedule,
     title: `${schedule.specialtyId.title} - ${schedule.customerId.name} - ${schedule.colaboratorId.name}`,
     start: moment(schedule.date).toDate(),
     end: moment(schedule.date)
@@ -66,6 +69,29 @@ const Schedules = () => {
     );
   };
 
+  const setSchedule = (key, value) => {
+    dispatch(
+      updateSchedule({
+        schedule: { ...schedule, [key]: value },
+      })
+    );
+  };
+
+  const formatSchedule = (schedule) => {
+    let scheduleFormatted = {
+      companyId: schedule.companyId,
+      specialtyId: schedule.specialtyId._id,
+      customerId: schedule.customerId._id,
+      colaboratorId: schedule.colaboratorId._id,
+      date: schedule.date,
+      value: schedule.value,
+    };
+
+    console.log(scheduleFormatted);
+
+    return scheduleFormatted;
+  };
+
   useEffect(() => {
     dispatch(
       schedulesFilter(
@@ -73,7 +99,11 @@ const Schedules = () => {
         moment().weekday(6).format("YYYY-MM-DD")
       )
     );
+    dispatch(allSpecialties());
+    dispatch(allCustomers());
   }, []);
+
+  const formatSpecialties = specialties.map((s) => ({}));
 
   return (
     <div className="col p-5 overflow-auto h-100">
@@ -86,6 +116,47 @@ const Schedules = () => {
           <h3>
             {behavior === "create" ? "Criar novo" : "Atualizar"} agendamento
           </h3>
+          <div className="row mt-3">
+            <div className="form-group col-12 mb-3">
+              <b>Cliente</b>
+              <SelectPicker
+                value={schedule.customerId}
+                placeholder="Nome do cliente"
+                onChange={(customerId) =>
+                  setSchedule("customerId", customerId)
+                }
+                block
+                size="lg"
+                data={customers}
+              />
+            </div>
+            <div className="form-group col-12 mb-3">
+              <b>Serviço</b>
+              <SelectPicker
+                value={schedule.specialtyId}
+                placeholder="Nome do serviço"
+                onChange={(specialtyId) =>
+                  setSchedule("specialtyId", specialtyId)
+                }
+                block
+                size="lg"
+                data={specialties}
+              />
+            </div>
+            <div className="form-group col-12 mb-3">
+              <b>Colaborador</b>
+              <SelectPicker
+                value={schedule.colaboratorId}
+                placeholder="Colaboradores disponíveis"
+                onChange={(colaboratorId) =>
+                  setSchedule("colaboratorId", colaboratorId)
+                }
+                block
+                size="lg"
+                data={[]}
+              />
+            </div>
+          </div>
         </Drawer.Body>
       </Drawer>
       <div className="row">
@@ -110,6 +181,20 @@ const Schedules = () => {
             </div>
           </div>
           <Calendar
+            onSelectEvent={(e) => {
+              dispatch(
+                updateSchedule({
+                  behavior: "update",
+                })
+              );
+
+              dispatch(
+                updateSchedule({
+                  schedule: formatSchedule(e.resource),
+                })
+              );
+              setComponent("drawer", true);
+            }}
             localizer={localizer}
             onRangeChange={(period) => {
               const { start, end } = formatRange(period);

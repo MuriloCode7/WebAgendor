@@ -20,6 +20,10 @@ export function allSpecialties(){
   return { type: types.ALL_SPECIALTIES}
 }
 
+export function allCustomers(){
+  return { type: types.ALL_CUSTOMERS}
+}
+
 export function filterColaborators(){
   return { type: types.FILTER_COLABORATORS}
 }

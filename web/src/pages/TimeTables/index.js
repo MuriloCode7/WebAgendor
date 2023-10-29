@@ -13,13 +13,14 @@ import {
 import "moment/locale/pt-br";
 import {
   allTimeTables,
-  allSpecialties,
   updateTimeTable,
   filterColaborators,
   addTimeTable,
   removeTimeTable,
   resetTimeTable,
+  allSpecialties
 } from "../../store/modules/timeTable/actions";
+
 import { useDispatch, useSelector } from "react-redux";
 
 moment.locale("pt-br");
