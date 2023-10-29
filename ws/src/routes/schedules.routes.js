@@ -162,6 +162,7 @@ dias disponiveis, os horarios disponiveis para esses dias e os colaboradores
 router.post("/availableDays", async (req, res) => {
   try {
     const { date, companyId, specialtyId } = req.body;
+    console.log(specialtyId);
     const timeTables = await TimeTable.find({ companyId });
     const specialty = await Specialty.findById(specialtyId).select("duration");
 
@@ -327,13 +328,13 @@ router.post("/availableDays", async (req, res) => {
     colaborators = _.uniq(colaborators.flat());
 
     colaborators = await Colaborator.find({
-      _id: {$in: colaborators},
-    }).select('name avatar');
+      _id: { $in: colaborators },
+    }).select("name avatar");
 
     colaborators = colaborators.map((c) => ({
       ...c._doc,
-      name: c.name.split(' ')[0]
-    }))
+      name: c.name.split(" ")[0],
+    }));
 
     res.json({
       error: false,

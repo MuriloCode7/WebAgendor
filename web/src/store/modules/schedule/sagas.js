@@ -68,7 +68,40 @@ export function* allCustomers() {
       return false;
     }
 
-    yield put(updateSchedule({ customers: res.customers.map(c => ({label: c.name, value: c._id})) }));
+    yield put(
+      updateSchedule({
+        customers: res.customers.map((c) => ({ label: c.name, value: c._id })),
+      })
+    );
+  } catch (err) {
+    yield put(updateSchedule({ form: { ...form, filtering: false } }));
+    alert(err.message);
+  }
+}
+
+export function* filterAvailableDays() {
+  const { form, schedule } = yield select((state) => state.schedule);
+
+  try {
+    yield put(updateSchedule({ form: { ...form, filtering: true } }));
+
+    const { data: res } = yield call(api.post, "/schedules/availableDays", {
+      companyId: consts.companyId,
+      date: schedule.date,
+      specialtyId: schedule.specialtyId,
+    });
+
+    yield put(updateSchedule({ form: { ...form, filtering: false } }));
+
+    if (res.error) {
+      alert(res.message);
+      return false;
+    }
+
+    console.log(res);
+    yield put(updateSchedule({
+      colaborators: res.colaborators.map((c) => ({ label: c.name, value: c._id })),
+    }))
   } catch (err) {
     yield put(updateSchedule({ form: { ...form, filtering: false } }));
     alert(err.message);
@@ -79,4 +112,5 @@ export default all([
   takeLatest(types.SCHEDULES_FILTER, filterSchedule),
   takeLatest(types.ALL_SPECIALTIES, allSpecialties),
   takeLatest(types.ALL_CUSTOMERS, allCustomers),
+  takeLatest(types.FILTER_AVAILABLE_DAYS, filterAvailableDays),
 ]);

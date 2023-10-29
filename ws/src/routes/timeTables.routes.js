@@ -73,6 +73,7 @@ router.post("/colaborators", async (req, res) => {
       value: bond.colaboratorId._id,
     }));
 
+    console.log(listColaborators);
     res.json({ error: false, colaborators: listColaborators });
   } catch (err) {
     res.json({ error: true, message: err.message });

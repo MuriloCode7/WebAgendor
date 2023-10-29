@@ -1,7 +1,7 @@
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import moment from "moment";
-import { Drawer, SelectPicker } from "rsuite";
+import { DatePicker, Drawer, SelectPicker } from "rsuite";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import utils from "../../utils";
@@ -13,6 +13,7 @@ import {
   updateSchedule,
   allSpecialties,
   allCustomers,
+  filterAvailableDays,
 } from "../../store/modules/schedule/actions";
 
 moment.locale("pt-br");
@@ -83,11 +84,9 @@ const Schedules = () => {
       specialtyId: schedule.specialtyId._id,
       customerId: schedule.customerId._id,
       colaboratorId: schedule.colaboratorId._id,
-      date: schedule.date,
+      date: new Date(schedule.date),
       value: schedule.value,
     };
-
-    console.log(scheduleFormatted);
 
     return scheduleFormatted;
   };
@@ -102,6 +101,14 @@ const Schedules = () => {
     dispatch(allSpecialties());
     dispatch(allCustomers());
   }, []);
+
+  /* Busca os dias e colaboradores disponíveis sempre que o usuário
+  seleciona um serviço ou data diferente */
+  useEffect(() => {
+    if (schedule.specialtyId !== null) {
+      dispatch(filterAvailableDays());
+    }
+  }, [schedule.specialtyId, schedule.date]);
 
   const formatSpecialties = specialties.map((s) => ({}));
 
@@ -122,9 +129,7 @@ const Schedules = () => {
               <SelectPicker
                 value={schedule.customerId}
                 placeholder="Nome do cliente"
-                onChange={(customerId) =>
-                  setSchedule("customerId", customerId)
-                }
+                onChange={(customerId) => setSchedule("customerId", customerId)}
                 block
                 size="lg"
                 data={customers}
@@ -143,6 +148,27 @@ const Schedules = () => {
                 data={specialties}
               />
             </div>
+            <div className="col-6 mb-3">
+              <b className="d-block"> Dia </b>
+              <DatePicker
+                block
+                format="dd-MMM-yyyy"
+                placeholder="Dia do agendamento"
+                value={schedule.date}
+                onChange={(e) => setSchedule("date", e)}
+              />
+            </div>
+            <div className="col-6 mb-3">
+              <b className="d-block"> Horário </b>
+              <DatePicker
+                block
+                format="HH:mm"
+                hideMinutes={(min) => ![0, 30].includes(min)}
+                placeholder="Horário do agendamento"
+                value={schedule.date}
+                onChange={(e) => setSchedule("date", e)}
+              />
+            </div>
             <div className="form-group col-12 mb-3">
               <b>Colaborador</b>
               <SelectPicker
@@ -153,7 +179,7 @@ const Schedules = () => {
                 }
                 block
                 size="lg"
-                data={[]}
+                data={colaborators}
               />
             </div>
           </div>

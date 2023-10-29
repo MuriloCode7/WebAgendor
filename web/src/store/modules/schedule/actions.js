@@ -8,24 +8,24 @@ export function addSchedule() {
   return { type: types.SCHEDULE_ADD };
 }
 
-export function resetSchedule(){
-  return { type: types.SCHEDULE_RESET}
+export function resetSchedule() {
+  return { type: types.SCHEDULE_RESET };
 }
 
 export function removeSchedule() {
   return { type: types.SCHEDULE_REMOVE };
 }
 
-export function allSpecialties(){
-  return { type: types.ALL_SPECIALTIES}
+export function allSpecialties() {
+  return { type: types.ALL_SPECIALTIES };
 }
 
-export function allCustomers(){
-  return { type: types.ALL_CUSTOMERS}
+export function allCustomers() {
+  return { type: types.ALL_CUSTOMERS };
 }
 
-export function filterColaborators(){
-  return { type: types.FILTER_COLABORATORS}
+export function filterAvailableDays() {
+  return { type: types.FILTER_AVAILABLE_DAYS };
 }
 
 export function schedulesFilter(start, end) {

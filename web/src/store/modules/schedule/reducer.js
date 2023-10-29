@@ -17,9 +17,9 @@ const INITIAL_STATE = {
   },
   schedule: {
     companyId: consts.companyId,
-    customerId: "",
-    colaboratorId: "",
-    specialtyId: "",
+    customerId: null,
+    colaboratorId: null,
+    specialtyId: null,
     date: new Date(moment()),
     value: 0,
   },
