@@ -20,7 +20,7 @@ const INITIAL_STATE = {
     customerId: null,
     colaboratorId: null,
     specialtyId: null,
-    date: new Date(moment()),
+    date: null,
     value: 0,
   },
   customers: [],

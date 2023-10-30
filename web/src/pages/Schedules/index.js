@@ -148,23 +148,12 @@ const Schedules = () => {
                 data={specialties}
               />
             </div>
-            <div className="col-6 mb-3">
+            <div className="col-12 mb-3">
               <b className="d-block"> Dia </b>
               <DatePicker
                 block
                 format="dd-MMM-yyyy"
-                placeholder="Dia do agendamento"
-                value={schedule.date}
-                onChange={(e) => setSchedule("date", e)}
-              />
-            </div>
-            <div className="col-6 mb-3">
-              <b className="d-block"> Horário </b>
-              <DatePicker
-                block
-                format="HH:mm"
-                hideMinutes={(min) => ![0, 30].includes(min)}
-                placeholder="Horário do agendamento"
+                placeholder="Selecione um serviço para ver os dias disponíveis"
                 value={schedule.date}
                 onChange={(e) => setSchedule("date", e)}
               />
@@ -173,13 +162,25 @@ const Schedules = () => {
               <b>Colaborador</b>
               <SelectPicker
                 value={schedule.colaboratorId}
-                placeholder="Colaboradores disponíveis"
+                placeholder="Selecione um dia para ver os colaboradores disponíveis"
                 onChange={(colaboratorId) =>
                   setSchedule("colaboratorId", colaboratorId)
                 }
                 block
                 size="lg"
                 data={colaborators}
+                loading={form.filtering}
+              />
+            </div>
+            <div className="col-12 mb-3">
+              <b className="d-block"> Horário </b>
+              <DatePicker
+                block
+                format="HH:mm"
+                hideMinutes={(min) => ![0, 30].includes(min)}
+                placeholder="Selecione um colaborador para ver os horários disponíveis"
+                value={schedule.date}
+                onChange={(e) => setSchedule("date", e)}
               />
             </div>
           </div>

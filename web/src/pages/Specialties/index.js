@@ -1,7 +1,5 @@
 import { useEffect } from "react";
 import { Button, Drawer, Modal, Tag, DatePicker, Uploader } from "rsuite";
-import Icon from "@mdi/react";
-import { mdiAlert, mdiCameraPlus } from "@mdi/js";
 import "rsuite/dist/rsuite.min.css";
 import Table from "../../components/Table";
 import moment from "moment";
