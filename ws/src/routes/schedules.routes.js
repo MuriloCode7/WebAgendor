@@ -162,7 +162,6 @@ dias disponiveis, os horarios disponiveis para esses dias e os colaboradores
 router.post("/availableDays", async (req, res) => {
   try {
     const { date, companyId, specialtyId } = req.body;
-    console.log(specialtyId);
     const timeTables = await TimeTable.find({ companyId });
     const specialty = await Specialty.findById(specialtyId).select("duration");
 
