@@ -1,18 +1,10 @@
 import { useEffect } from "react";
-import {
-  Button,
-  Drawer,
-  Modal,
-  IconButton,
-  Tag,
-  DatePicker,
-  Uploader,
-} from "rsuite";
+import { Button, Drawer, Modal, Tag, DatePicker, Uploader } from "rsuite";
+import Icon from "@mdi/react";
+import { mdiAlert, mdiCameraPlus } from "@mdi/js";
 import "rsuite/dist/rsuite.min.css";
 import Table from "../../components/Table";
 import moment from "moment";
-
-import PlayOutlineIcon from "@rsuite/icons/PlayOutline";
 import consts from "../../consts";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -152,7 +144,9 @@ const Specialties = () => {
               ></textarea>
             </div>
             <div className="form-group col-12 mb-3">
-              <b className="d-block">Imagens do serviço {'(DESABILITADO PARA CORREÇÃO NO UPLOAD)'}</b>
+              <b className="d-block">
+                Imagens do serviço {"(DESABILITADO PARA CORREÇÃO NO UPLOAD)"}
+              </b>
               <Uploader
                 multiple
                 autoUpload={false}
@@ -177,10 +171,10 @@ const Specialties = () => {
                 }}
               >
                 <button>
-                  <IconButton
-                    icon={<PlayOutlineIcon />}
-                    placement="center"
-                  ></IconButton>
+                  <span
+                    className="mdi mdi-camera-plus"
+                    style={{ fontSize: 40 }}
+                  />
                 </button>
               </Uploader>
             </div>
@@ -212,21 +206,13 @@ const Specialties = () => {
           )}
         </Drawer.Body>
       </Drawer>
-
-      <Modal
-        open={components.confirmDelete}
-        size="xs"
-      >
+      <Modal open={components.confirmDelete} size="xs">
         <Modal.Body>
-          <IconButton
-            icon="remind"
-            style={{
-              color: "#ffb300",
-              fontSize: 24,
-            }}
-          />
-          {"  "} <br></br>Tem certeza que deseja excluir? <br></br>Essa ação
-          será irreversível!
+          <div className="w-100 d-flex justify-content">
+            <span className="mdi mdi-alert" style={{ fontSize: 40 }} />
+            Tem certeza que deseja excluir?
+            <br></br>Essa ação será irreversível!
+          </div>
         </Modal.Body>
         <Modal.Footer>
           <Button
