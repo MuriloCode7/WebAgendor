@@ -166,7 +166,7 @@ router.post("/availableDays", async (req, res) => {
     const specialty = await Specialty.findById(specialtyId).select("duration");
 
     let calendar = [];
-    let lastDay = moment(date);
+    let firstDay = moment(date);
     let colaborators = [];
 
     // Duracao do servico sendo convertida para minutos
@@ -194,7 +194,7 @@ router.post("/availableDays", async (req, res) => {
       const validTimeTables = timeTables.filter((timeTable) => {
         // Recebe true se o dia da semana escolhido está disponivel no horario
         const availableDaysWeek = timeTable.days.includes(
-          moment(lastDay).day()
+          moment(firstDay).day()
         );
 
         // Recebe true se o servico stá disponivel no horario
@@ -221,8 +221,8 @@ router.post("/availableDays", async (req, res) => {
             allTimeTablesDay[colaboratorId] = [
               ...allTimeTablesDay[colaboratorId],
               ...utils.sliceMinutes(
-                utils.mergeDateTime(lastDay, timeTable.startTime),
-                utils.mergeDateTime(lastDay, timeTable.endTime),
+                utils.mergeDateTime(firstDay, timeTable.startTime),
+                utils.mergeDateTime(firstDay, timeTable.endTime),
                 utils.SLOT_DURATION
               ),
             ];
@@ -235,8 +235,8 @@ router.post("/availableDays", async (req, res) => {
           const schedules = await Schedule.find({
             colaboratorId,
             date: {
-              $gte: moment(lastDay).startOf("day"),
-              $lte: moment(lastDay).endOf("day"),
+              $gte: moment(firstDay).startOf("day"),
+              $lte: moment(firstDay).endOf("day"),
             },
           })
             .select("date specialtyId -_id")
@@ -315,12 +315,12 @@ router.post("/availableDays", async (req, res) => {
         if (totalColaborators > 0) {
           colaborators.push(Object.keys(allTimeTablesDay));
           calendar.push({
-            [lastDay.format("YYYY-MM-DD")]: allTimeTablesDay,
+            [firstDay.format("YYYY-MM-DD")]: allTimeTablesDay,
           });
         }
       }
 
-      lastDay = lastDay.add(1, "day");
+      firstDay = firstDay.add(1, "day");
     }
 
     /* Recuperando dados dos colaboradores */

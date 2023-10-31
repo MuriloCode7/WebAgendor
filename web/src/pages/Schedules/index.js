@@ -150,12 +150,16 @@ const Schedules = () => {
             </div>
             <div className="col-12 mb-3">
               <b className="d-block"> Dia </b>
-              <DatePicker
+              {/* <DatePicker
                 block
-                format="dd-MMM-yyyy"
+                loading={form.filtering}
+                format="dd-MM-yyyy"
                 placeholder="Selecione um serviço para ver os dias disponíveis"
                 value={schedule.date}
                 onChange={(e) => setSchedule("date", e)}
+              /> */}
+              <SelectPicker
+                
               />
             </div>
             <div className="form-group col-12 mb-3">
