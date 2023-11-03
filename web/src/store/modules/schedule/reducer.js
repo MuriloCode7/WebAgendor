@@ -27,6 +27,8 @@ const INITIAL_STATE = {
   colaborators: [],
   specialties: [],
   schedules: [],
+  calendar: {},
+  availableTimeTables: [],
 };
 
 function schedule(state = INITIAL_STATE, action) {

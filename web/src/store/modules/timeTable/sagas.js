@@ -129,7 +129,6 @@ export function* removeTimeTable() {
   );
   try {
     yield put(updateTimeTable({ form: { ...form, filtering: true } }));
-    console.log(timeTable);
     const { data: res } = yield call(
       api.delete,
       `/timeTables/${timeTable._id}`

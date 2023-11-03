@@ -1,7 +1,7 @@
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import moment from "moment";
-import { DatePicker, Drawer, SelectPicker } from "rsuite";
+import { Button, DatePicker, Drawer, SelectPicker } from "rsuite";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import utils from "../../utils";
@@ -14,6 +14,7 @@ import {
   allSpecialties,
   allCustomers,
   filterAvailableDays,
+  addSchedule,
 } from "../../store/modules/schedule/actions";
 
 moment.locale("pt-br");
@@ -30,6 +31,8 @@ const Schedules = () => {
     specialties,
     customers,
     behavior,
+    calendar,
+    availableTimeTables,
   } = useSelector((state) => state.schedule);
 
   const formatEvents = schedules.map((schedule) => ({
@@ -78,6 +81,10 @@ const Schedules = () => {
     );
   };
 
+  const save = () => {
+    dispatch(addSchedule());
+  };
+
   const formatSchedule = (schedule) => {
     let scheduleFormatted = {
       companyId: schedule.companyId,
@@ -89,6 +96,24 @@ const Schedules = () => {
     };
 
     return scheduleFormatted;
+  };
+
+  const formatTimeTablesDay = () => {
+    let allTimeTablesDay = [];
+    for (let timeTable in calendar[schedule.colaboratorId]) {
+      for (let hour in calendar[schedule.colaboratorId][timeTable]) {
+        let pieces = calendar[schedule.colaboratorId][timeTable][hour].split(':')
+        console.log('data: ', moment(schedule.date).format('HH:mm').toString())
+        
+        let formattedHour = {
+          label: calendar[schedule.colaboratorId][timeTable][hour],
+          value: new Date(moment(schedule.date)).setHours(parseInt(pieces[0]), parseInt(pieces[1]), 0)
+        };
+        allTimeTablesDay.push(formattedHour);
+      }
+    }
+    console.log("Alltimetablesday", allTimeTablesDay);
+    return allTimeTablesDay;
   };
 
   useEffect(() => {
@@ -105,12 +130,10 @@ const Schedules = () => {
   /* Busca os dias e colaboradores disponíveis sempre que o usuário
   seleciona um serviço ou data diferente */
   useEffect(() => {
-    if (schedule.specialtyId !== null) {
+    if (schedule.specialtyId !== null && schedule.date !== null) {
       dispatch(filterAvailableDays());
     }
   }, [schedule.specialtyId, schedule.date]);
-
-  const formatSpecialties = specialties.map((s) => ({}));
 
   return (
     <div className="col p-5 overflow-auto h-100">
@@ -152,17 +175,22 @@ const Schedules = () => {
               <b className="d-block"> Dia </b>
               <DatePicker
                 block
-                format="dd-MMM-yyyy"
+                format="dd/MM/yyyy"
                 placeholder="Selecione um serviço para ver os dias disponíveis"
                 value={schedule.date}
                 onChange={(e) => setSchedule("date", e)}
               />
             </div>
             <div className="form-group col-12 mb-3">
-              <b>Colaborador</b>
+              <b>Colaboradores disponíveis no dia</b>
               <SelectPicker
+                disabled={schedule.date === null ? true : false}
                 value={schedule.colaboratorId}
-                placeholder="Selecione um dia para ver os colaboradores disponíveis"
+                placeholder={
+                  colaborators.length > 0
+                    ? "Selecione um colaborador"
+                    : "Sem colaboradores disponíveis nesse dia"
+                }
                 onChange={(colaboratorId) =>
                   setSchedule("colaboratorId", colaboratorId)
                 }
@@ -173,16 +201,49 @@ const Schedules = () => {
               />
             </div>
             <div className="col-12 mb-3">
-              <b className="d-block"> Horário </b>
-              <DatePicker
+              <b className="d-block">
+                {" "}
+                Horários disponíveis para esse colaborador{" "}
+              </b>
+              <SelectPicker
+                disabled={schedule.colaboratorId === null ? true : false}
+                value={moment(schedule.date).format('HH:mm').toString()}
+                placeholder="Selecione um horário"
+                onChange={(date) => setSchedule("date", date)}
                 block
-                format="HH:mm"
-                hideMinutes={(min) => ![0, 30].includes(min)}
-                placeholder="Selecione um colaborador para ver os horários disponíveis"
-                value={schedule.date}
-                onChange={(e) => setSchedule("date", e)}
+                size="lg"
+                data={
+                  Object.keys(calendar).length === 0
+                    ? []
+                    : formatTimeTablesDay()
+                }
+                loading={form.filtering}
               />
             </div>
+            <Button
+              loading={form.saving}
+              color={behavior === "create" ? "green" : "blue"}
+              appearance="primary"
+              size="lg"
+              block
+              onClick={() => save()}
+              className="mt-3"
+            >
+              Salvar Agendamento
+            </Button>
+            {behavior === "update" && (
+              <Button
+                loading={form.saving}
+                color="red"
+                appearance="primary"
+                size="lg"
+                block
+                onClick={() => setComponent("confirmDelete", true)}
+                className="mt-1"
+              >
+                Excluir agendamento
+              </Button>
+            )}
           </div>
         </Drawer.Body>
       </Drawer>
