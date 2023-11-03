@@ -3,6 +3,7 @@ import api from "../../../services/api";
 import consts from "../../../consts";
 import types from "./types";
 import { updateSchedule } from "./actions";
+import moment from "moment";
 
 export function* filterSchedule({ start, end }) {
   try {
@@ -87,7 +88,7 @@ export function* filterAvailableDays() {
 
     const { data: res } = yield call(api.post, "/schedules/availableDays", {
       companyId: consts.companyId,
-      date: schedule.date,
+      date: moment(),
       specialtyId: schedule.specialtyId,
     });
 
