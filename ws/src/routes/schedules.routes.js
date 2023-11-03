@@ -342,4 +342,15 @@ router.post("/availableDays", async (req, res) => {
   }
 });
 
+router.delete("/:scheduleId", async (req, res) => {
+  try {
+    const { scheduleId } = req.params;
+
+    await Schedule.findByIdAndDelete(scheduleId);
+    res.json({ error: false });
+  } catch (err) {
+    res.json({ error: true, message: err.message });
+  }
+});
+
 module.exports = router;

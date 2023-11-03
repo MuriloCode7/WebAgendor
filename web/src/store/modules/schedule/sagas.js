@@ -112,7 +112,7 @@ export function* filterAvailableDays() {
         calendar: res.calendar[0][moment(schedule.date).format("YYYY-MM-DD")],
       })
     );
-    console.log(res.calendar)
+    console.log(res.calendar);
   } catch (err) {
     yield put(updateSchedule({ form: { ...form, filtering: false } }));
     alert(err.message);
@@ -124,16 +124,23 @@ export function* addSchedule() {
     (state) => state.schedule
   );
 
+  let pieces = schedule.hour.split(":");
+
   try {
     yield put(updateSchedule({ form: { ...form, saving: true } }));
     let res = {};
 
-      const response = yield call(api.post, "/schedules", {
-        companyId: consts.companyId,
-        ...schedule,
-      });
-      res = response.data;
-    
+    const response = yield call(api.post, "/schedules", {
+      companyId: consts.companyId,
+      ...schedule,
+      date: new Date(moment(schedule.date)).setHours(
+        parseInt(pieces[0]),
+        parseInt(pieces[1]),
+        0
+      ),
+    });
+    res = response.data;
+
     yield put(updateSchedule({ form: { ...form, saving: false } }));
 
     if (res.error) {
@@ -142,12 +149,39 @@ export function* addSchedule() {
     }
 
     // yield put(allTimeTablesAction());
-    yield put(
-      updateSchedule({ components: { ...components, drawer: false } })
-    );
+    yield put(updateSchedule({ components: { ...components, drawer: false } }));
     yield put(resetSchedule());
   } catch (err) {
     yield put(updateSchedule({ form: { ...form, saving: false } }));
+    alert(err.message);
+  }
+}
+
+export function* removeSchedule() {
+  const { form, schedule, components } = yield select(
+    (state) => state.schedule
+  );
+  try {
+    yield put(updateSchedule({ form: { ...form, filtering: true } }));
+    const { data: res } = yield call(
+      api.delete,
+      `/schedules/${schedule._id}`
+    );
+
+    yield put(updateSchedule({ form: { ...form, filtering: false } }));
+
+    if (res.error) {
+      alert(res.message);
+      return false;
+    }
+    yield put(
+      updateSchedule({
+        components: { ...components, drawer: false, confirmDelete: false },
+      })
+    );
+    yield put(resetSchedule());
+  } catch (err) {
+    yield put(updateSchedule({ form: { ...form, filtering: false } }));
     alert(err.message);
   }
 }
@@ -158,4 +192,5 @@ export default all([
   takeLatest(types.ALL_CUSTOMERS, allCustomers),
   takeLatest(types.FILTER_AVAILABLE_DAYS, filterAvailableDays),
   takeLatest(types.SCHEDULE_ADD, addSchedule),
+  takeLatest(types.SCHEDULE_REMOVE, removeSchedule),
 ]);

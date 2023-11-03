@@ -1,7 +1,7 @@
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import moment from "moment";
-import { Button, DatePicker, Drawer, SelectPicker } from "rsuite";
+import { Button, DatePicker, Drawer, Modal, SelectPicker } from "rsuite";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import utils from "../../utils";
@@ -15,6 +15,7 @@ import {
   allCustomers,
   filterAvailableDays,
   addSchedule,
+  removeSchedule,
 } from "../../store/modules/schedule/actions";
 
 moment.locale("pt-br");
@@ -85,6 +86,10 @@ const Schedules = () => {
     dispatch(addSchedule());
   };
 
+  const remove = () => {
+    dispatch(removeSchedule());
+  };
+
   const formatSchedule = (schedule) => {
     let scheduleFormatted = {
       companyId: schedule.companyId,
@@ -93,6 +98,7 @@ const Schedules = () => {
       colaboratorId: schedule.colaboratorId._id,
       date: new Date(schedule.date),
       value: schedule.value,
+      hour: schedule.hour,
     };
 
     return scheduleFormatted;
@@ -102,12 +108,9 @@ const Schedules = () => {
     let allTimeTablesDay = [];
     for (let timeTable in calendar[schedule.colaboratorId]) {
       for (let hour in calendar[schedule.colaboratorId][timeTable]) {
-        let pieces = calendar[schedule.colaboratorId][timeTable][hour].split(':')
-        console.log('data: ', moment(schedule.date).format('HH:mm').toString())
-        
         let formattedHour = {
           label: calendar[schedule.colaboratorId][timeTable][hour],
-          value: new Date(moment(schedule.date)).setHours(parseInt(pieces[0]), parseInt(pieces[1]), 0)
+          value: calendar[schedule.colaboratorId][timeTable][hour],
         };
         allTimeTablesDay.push(formattedHour);
       }
@@ -173,15 +176,12 @@ const Schedules = () => {
             </div>
             <div className="col-12 mb-3">
               <b className="d-block"> Dia </b>
-              {/* <DatePicker
+              <DatePicker
                 block
                 format="dd/MM/yyyy"
                 placeholder="Selecione um serviço para ver os dias disponíveis"
                 value={schedule.date}
                 onChange={(e) => setSchedule("date", e)}
-              /> */}
-              <SelectPicker
-                
               />
             </div>
             <div className="form-group col-12 mb-3">
@@ -210,15 +210,13 @@ const Schedules = () => {
               </b>
               <SelectPicker
                 disabled={schedule.colaboratorId === null ? true : false}
-                value={moment(schedule.date).format('HH:mm').toString()}
+                value={schedule.hour}
                 placeholder="Selecione um horário"
-                onChange={(date) => setSchedule("date", date)}
+                onChange={(hour) => setSchedule("hour", hour)}
                 block
                 size="lg"
                 data={
-                  Object.keys(calendar).length === 0
-                    ? []
-                    : formatTimeTablesDay()
+                  schedule.colaboratorId === null ? [] : formatTimeTablesDay()
                 }
                 loading={form.filtering}
               />
@@ -250,6 +248,33 @@ const Schedules = () => {
           </div>
         </Drawer.Body>
       </Drawer>
+
+      <Modal
+        open={components.confirmDelete}
+        onClose={() => setComponent("confirmDelete", false)}
+        size="xs"
+      >
+        <Modal.Body>
+          {"  "} <br></br>Tem certeza que deseja excluir? <br></br>Essa ação
+          será irreversível!
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            loading={form.saving}
+            onClick={() => remove()}
+            color="red"
+            appearance="primary"
+          >
+            Sim, tenho certeza!
+          </Button>
+          <Button
+            onClick={() => setComponent("confirmDelete", false)}
+            appearance="subtle"
+          >
+            Cancelar
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <div className="row">
         <div className="col-12">
           <div className="w-100 d-flex justify-content-between">

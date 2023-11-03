@@ -21,6 +21,7 @@ const INITIAL_STATE = {
     colaboratorId: null,
     specialtyId: null,
     date: null,
+    hour: null,
     value: 0,
   },
   customers: [],

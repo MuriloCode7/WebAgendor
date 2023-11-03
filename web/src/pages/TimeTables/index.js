@@ -214,7 +214,7 @@ const TimeTables = () => {
 
       <Modal
         open={components.confirmDelete}
-        onHide={() => setComponent("confirmDelete", false)}
+        onClose={() => setComponent("confirmDelete", false)}
         size="xs"
       >
         <Modal.Body>

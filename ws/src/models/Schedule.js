@@ -31,6 +31,11 @@ const schedule = new Schema({
     required: true
   },
 
+  hour: {
+    type: String,
+    required: true
+  },
+
   commission: {
     type: Number,
   },
